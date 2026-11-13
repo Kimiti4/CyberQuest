@@ -6,7 +6,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 |---|---|---|---|
 | CQ00-01 | Repository and change governance | Repo metadata, branch convention, reviewed PR process | IN PROGRESS |
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
-| CQ00-03 | Architecture | Reviewed topology, authority boundaries, data and API direction | DRAFT |
+| CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed; founder ratification and client contract verification pending | PARTIAL |
 | CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
 | CQ00-05 | Reproducible toolchain | Python runtime and direct backend dependencies pinned; full transitive hash lock and Android/web toolchains pending | PARTIAL |
 | CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
@@ -16,6 +16,10 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-10 | CQ-00 review | All blockers resolved or explicitly accepted; owner sign-off | NOT STARTED |
 
 ## Evidence notes
+
+- CQ-00.4 architecture review: `docs/CQ-00.4-ARCHITECTURE-REVIEW.md`, ADR-0004 (unified platform boundaries) and ADR-0005 (offline sync authority) are proposed design decisions, not founder-ratified requirements.
+- CQ-00.4 toolchain assessment: Python backend foundation verified by run 43494824837; Android and web projects/builds are absent and remain NOT IMPLEMENTED / NOT RUN. Official compatibility references and scaffold acceptance requirements are recorded in `docs/CQ-00.4-TOOLCHAIN-MATRIX.md`.
+- `tests/test_architecture_contract.py` checks selected documented invariants. It is a documentation contract test, not runtime proof of Android/web/API behavior.
 
 - Draft OpenAPI contract: `openapi/cyberquest-v1.json` (design artefact; not a claim of complete API implementation).
 - API rules: `docs/API-CONTRACT.md`.
