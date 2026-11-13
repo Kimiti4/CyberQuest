@@ -23,14 +23,15 @@ jobs:
           cache-dependency-path: android/**/*.gradle*
       - name: Install pinned Android SDK packages
         run: |
-          yes | sdkmanager --licenses >/dev/null
-          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0"
       - name: Verify Gradle wrapper distribution
         working-directory: android
-        run: ./gradlew --version
+        run: sh ./gradlew --version
       - name: Run clean Android build, unit tests and lint
         working-directory: android
-        run: ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lint
+        run: sh ./gradlew --no-daemon clean testDebugUnitTest assembleDebug lint
 
   web:
     name: Web clean install, contract tests and production build
