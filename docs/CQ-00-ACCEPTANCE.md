@@ -9,11 +9,18 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-03 | Architecture | Reviewed topology, authority boundaries, data and API direction | DRAFT |
 | CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
 | CQ00-05 | Reproducible toolchain | Pinned compatible runtimes and documented setup | NOT RUN |
-| CQ00-06 | API and data contracts | Initial OpenAPI contract, schema conventions and migration policy | NOT STARTED |
+| CQ00-06 | API and data contracts | Draft OpenAPI 3.1 contract, conceptual data model and migration policy documented; runtime/schema verification pending | PARTIAL |
 | CQ00-07 | Automated verification | CI executes required checks and preserves results | IN PROGRESS |
 | CQ00-08 | Traceability | Requirements map to implementation and executable verification | DRAFT |
 | CQ00-09 | Operational readiness | Cost envelope, environments, backup/restore and release model | NOT STARTED |
 | CQ00-10 | CQ-00 review | All blockers resolved or explicitly accepted; owner sign-off | NOT STARTED |
+
+## Evidence notes
+
+- Draft OpenAPI contract: `openapi/cyberquest-v1.json` (design artefact; no API runtime).
+- API rules: `docs/API-CONTRACT.md`.
+- Conceptual entities and migration policy: `docs/DATA-MODEL.md` (no DDL or migrations applied).
+- Development environment evidence and outstanding toolchain work: `docs/DEVELOPMENT-ENVIRONMENT.md`.
 
 ## Status vocabulary
 

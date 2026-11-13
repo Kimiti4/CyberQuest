@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -31,3 +32,33 @@ def test_acceptance_register_preserves_unverified_states() -> None:
     assert "| NOT RUN |" in acceptance
     assert "| NOT STARTED |" in acceptance
     assert "CQ-01 remains blocked" in acceptance
+
+
+def test_openapi_contract_is_valid_json_with_expected_versioned_paths() -> None:
+    contract = json.loads((ROOT / "openapi/cyberquest-v1.json").read_text(encoding="utf-8"))
+    assert contract["openapi"] == "3.1.0"
+    assert contract["info"]["version"] == "1.0.0"
+    assert "/v1/mission-attempts" in contract["paths"]
+    assert "/v1/me/progress" in contract["paths"]
+    assert "/health/ready" in contract["paths"]
+
+
+def test_mutating_mission_operations_require_idempotency_and_authentication() -> None:
+    contract = json.loads((ROOT / "openapi/cyberquest-v1.json").read_text(encoding="utf-8"))
+    for path in ["/v1/mission-attempts", "/v1/mission-attempts/{attemptId}/events"]:
+        endpoint = contract["paths"][path]["post"]
+        assert endpoint["security"] == [{"BearerAuth": []}]
+        assert any(p["name"] == "Idempotency-Key" and p["required"] for p in endpoint["parameters"]]
+
+
+def test_mission_event_receipt_does_not_claim_completion() -> None:
+    contract = json.loads((ROOT / "openapi/cyberquest-v1.json").read_text(encoding="utf-8"))
+    receipt = contract["components"]["schemas"]["EventReceipt"]
+    assert receipt["properties"]["status"]["enum"] == ["accepted_for_evaluation"]
+
+
+def test_data_model_documents_append_only_rewards_and_version_pinning() -> None:
+    model = (ROOT / "docs/DATA-MODEL.md").read_text(encoding="utf-8")
+    assert "XP ledger is append-only" in model
+    assert "Attempt records pin immutable content/assessment versions" in model
+    assert "no database schema or migration has been applied" in model

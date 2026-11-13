@@ -42,6 +42,10 @@ These are proposed choices until their compatibility and operational fit are ver
 - [Security and privacy](docs/SECURITY-AND-PRIVACY.md)
 - [CQ-00 acceptance gates](docs/CQ-00-ACCEPTANCE.md)
 - [Requirements traceability](docs/TRACEABILITY.md)
+- [API contract baseline](docs/API-CONTRACT.md)
+- [OpenAPI draft](openapi/cyberquest-v1.json)
+- [Initial data model and migration policy](docs/DATA-MODEL.md)
+- [Development environment](docs/DEVELOPMENT-ENVIRONMENT.md)
 - [Branch and change policy](docs/BRANCH-AND-CHANGE-POLICY.md)
 - [Architecture decisions](docs/DECISIONS/)
 
