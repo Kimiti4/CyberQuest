@@ -2,7 +2,7 @@
 
 CQ-00 establishes product and engineering foundations; it does not claim a deployed or production-ready product.
 
-| ID | Gate | Required evidence | Initial status |
+| ID | Gate | Required evidence | Current status |
 |---|---|---|---|
 | CQ00-01 | Repository and change governance | Repo metadata, branch convention, reviewed PR process | IN PROGRESS |
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
@@ -30,7 +30,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 - PostgreSQL CI run 43471996771: migration upgrade, schema inspection, downgrade/re-upgrade and complete test suite succeeded; pytest reported 18 passed, 1 warning. The run tested PR merge candidate `1f866a9179cfedf3d94d8340c8ab50f1ba1d3219`, containing source commit `6b2f564277d0a7af92a83bea3369feeba924ca3c`. The documentation-only follow-up commit is separately verified by its own workflow before this register is treated as current-head CI evidence.
 - PostgreSQL CI run 43494824837: verified committed `requirements-lock.txt` is up to date with `pyproject.toml`, installed it in hash-checking mode, `pip check` passed, migration upgrade/schema/downgrade/re-upgrade passed, and complete test suite reported 18 passed, 1 warning. Candidate commit `ccd7ddc` on `feat/cq-00-3-dependency-lock`.
 - CQ-00.4 ratification: ADR-0004 and ADR-0005 were accepted by the founder on 2026-11-14. Ratified branch head `e1387436ecb1ae036ae345356f7f64d71b41b899` had 2 successful CI check runs.
-- CQ-00.5 cross-platform run `43510026173` and Python/PostgreSQL foundation run `43510026113` both passed on candidate `0b1c2d5642dd5b8641f519c586b6a8f60bbc9b61`.
+- CQ-00.5 cross-platform run `43510431845` and Python/PostgreSQL foundation run `43510432019` both passed on candidate `0c95b30c990d0a9fc0247ded70fd5bf163f27261`.
 - Android/Linux: Gradle 8.13 clean build, uncached JUnit execution, debug APK assembly and lint passed (56 tasks; 55 executed, 1 up-to-date).
 - Android/Windows: PowerShell materialized the official wrapper payload, verified its SHA-256 and started Gradle 8.13 successfully.
 - Web: `npm ci` from committed lock, TypeScript typecheck, five Node contract tests, warning-free Redocly lint and Next.js 16.4.0 production build passed. No server URL is declared because no API deployment exists; Redocly's empty-server rule is explicitly disabled and placeholder server URLs are rejected.
