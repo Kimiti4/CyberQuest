@@ -1,6 +1,6 @@
 # Development Environment Baseline
 
-**Status: backend foundation reproducible; Android and web toolchains not yet implemented or certified.**
+**Status: backend foundation verified; Android and web scaffolds introduced in CQ-00.5; current clean-build evidence pending.**
 
 ## Verified backend CI environment
 
@@ -16,13 +16,13 @@ This verifies the existing backend foundation scope, not production deployment o
 
 ## Android environment
 
-Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. No Android project, wrapper, SDK, emulator or successful build/test currently exists in the repository.
+Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. The minimal Android Compose project, Gradle wrapper scripts and checksum-verified wrapper payload are now present on the CQ-00.5 branch. The Android SDK build/test job has not yet supplied a verified result.
 
 At scaffold creation, choose a mutually compatible Kotlin/AGP/Gradle/JDK tuple from official compatibility matrices. Commit wrapper scripts/JAR and distribution checksum, dependency verification configuration, exact JDK patch, compile/target SDK and build-tools versions. CI must run clean assemble, unit tests, lint and emulator smoke/instrumentation tests.
 
 ## Web environment
 
-Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. Exact Node patch, Next.js/React versions and package manager must be pinned when the scaffold is created.
+Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. CQ-00.5 pins Node 22.16.0, npm 10.9.2, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. The first CI run bootstraps package-lock.json as a temporary artifact; commit that generated lock and rerun CI before declaring reproducibility.
 
 Commit the selected package manager's lockfile and use immutable installation (`npm ci` if npm is selected). CI must run lint, typecheck, unit tests and production build; add browser smoke tests before integration claims.
 
@@ -45,8 +45,8 @@ Commit the selected package manager's lockfile and use immutable installation (`
 
 - Hash-lock the bootstrap lock compiler and assess artifact provenance.
 - Pin immutable runner/container images where operationally justified.
-- Create and build the Android scaffold on clean CI.
-- Create and build the web scaffold on clean CI.
+- Review the Android clean-build CI result and add emulator-backed smoke verification.
+- Commit the generated npm lock artifact and rerun the web job using npm ci from the committed lock.
 - Contract-test OpenAPI and client compatibility.
 - Select production identity/session design and provider only after threat-model review.
 - Execute backup restore and document provider cost/data-residency decisions.
