@@ -67,12 +67,21 @@ def test_data_model_documents_append_only_rewards_and_version_pinning() -> None:
 def test_ci_uses_read_only_permissions_and_pinned_actions() -> None:
     workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
     assert "permissions:\n  contents: read" in workflow
-    assert "actions/checkout@11d5960a326750d5838078e36cf38b85af677262" in workflow
-    assert "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065" in workflow
+    assert "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" in workflow
+    assert "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0" in workflow
+    for path in [".github/workflows/ci.yml", ".github/workflows/cross-platform-ci.yml"]:
+        action_workflow = (ROOT / path).read_text(encoding="utf-8")
+        action_lines = [
+            line.split("uses:", 1)[1].strip().split()[0]
+            for line in action_workflow.splitlines()
+            if "uses:" in line
+        ]
+        assert action_lines, path
+        assert all("@" in action and len(action.rsplit("@", 1)[1]) == 40 for action in action_lines), path
     assert "runs-on: ubuntu-24.04" in workflow
 
 
 def test_gitignore_excludes_secrets_and_local_build_artifacts() -> None:
     ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    for pattern in [".env", ".env.*", "*.pem", "*.key", "secrets/", "local.properties", ".venv/"]:
+    for pattern in [".env", ".env.*", "*.pem", "*.key", "secrets/", "local.properties", ".venv/", "android/gradle/wrapper/gradle-wrapper.jar"]:
         assert pattern in ignored

@@ -5,28 +5,22 @@
     "version": "1.0.0",
     "description": "Proposed contract only. No runtime implementation is implied."
   },
-  "servers": [
-    {
-      "url": "https://api.example.invalid",
-      "description": "Placeholder; replace before deployment"
-    },
-    {
-      "url": "http://localhost:8000",
-      "description": "Local development placeholder"
-    }
-  ],
   "tags": [
     {
-      "name": "Health"
+      "name": "Health",
+      "description": "Public liveness and readiness probes; responses do not expose dependency diagnostics."
     },
     {
-      "name": "Learning catalogue"
+      "name": "Learning catalogue",
+      "description": "Published learning-path and mission metadata for authenticated learners."
     },
     {
-      "name": "Mission attempts"
+      "name": "Mission attempts",
+      "description": "Version-pinned mission attempts and untrusted learner events evaluated by the server."
     },
     {
-      "name": "Learner progress"
+      "name": "Learner progress",
+      "description": "Server-authoritative learner progress, XP and competency summaries."
     }
   ],
   "paths": {
@@ -48,7 +42,8 @@
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/health/ready": {
@@ -79,7 +74,8 @@
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/v1/learning-paths": {

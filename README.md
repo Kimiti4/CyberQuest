@@ -11,7 +11,8 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 - Default branch: `main`
 - CQ-00 status: **IN PROGRESS**
 - CQ-00.4 architecture decisions ADR-0004 and ADR-0005: **FOUNDER-APPROVED**
-- Next checkpoint: **CQ-00.5 — Android and Web Reproducible Build Foundations**
+- CQ-00.5 — Android and Web Reproducible Build Foundations: **PASS** on verified candidate `0c95b30c990d0a9fc0247ded70fd5bf163f27261`.
+- CI verified Android/Linux build, uncached unit tests, debug APK assembly and lint; Windows Gradle wrapper integrity/startup; web clean install from committed lock, typecheck, five contract tests, warning-free OpenAPI lint and Next.js production build; Python/PostgreSQL foundation suite also passed.
 - No production application, real device scanning, malware detection or cyber-range execution is claimed.
 
 ## Product principles
@@ -34,13 +35,15 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 | Tests | Pytest, JUnit/Compose UI Test, Vitest, Playwright |
 | CI | GitHub Actions |
 
-These choices are approved architecture direction; exact runtime/tool versions must be pinned after compatibility checks and actual build verification.
+Exact versions and compatibility evidence are recorded in [CQ-00.5 toolchain locks](docs/CQ-00.5-TOOLCHAIN-LOCKS.md); CI verifies the build scaffolds, not production readiness.
 
 ## Documentation
 
 - [Product baseline](docs/PRODUCT-BASELINE.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [CQ-00.4 architecture review](docs/CQ-00.4-ARCHITECTURE-REVIEW.md)
+- [CQ-00.5 build foundations](docs/CQ-00.5-BUILD-FOUNDATIONS.md)
+- [CQ-00.5 toolchain locks](docs/CQ-00.5-TOOLCHAIN-LOCKS.md)
 - [Cross-platform toolchain matrix](docs/CQ-00.4-TOOLCHAIN-MATRIX.md)
 - [Security and privacy](docs/SECURITY-AND-PRIVACY.md)
 - [CQ-00 acceptance gates](docs/CQ-00-ACCEPTANCE.md)
@@ -60,4 +63,4 @@ CQ-01 must not begin until CQ-00 exit gates are reviewed and accepted.
 
 ## Development
 
-See [pyproject.toml](pyproject.toml) for the Python tooling baseline. CQ-00 CI currently validates the foundation documentation and Python test harness; it does not certify an application runtime or deployment.
+See [pyproject.toml](pyproject.toml) and the CQ-00.5 toolchain lock register for pinned build environments. Candidate CI verifies the backend foundation, Android build/test/lint, Windows Gradle wrapper startup and Next.js production build from the committed npm lock. No production deployment or learner-facing functionality is claimed.

@@ -1,0 +1,8 @@
+extends:
+  - minimal
+rules:
+  no-unresolved-refs: error
+  operation-operationId: error
+  operation-2xx-response: error
+  no-server-example.com: error
+  no-empty-servers: off # No API deployment exists at this checkpoint; do not invent a server URL.

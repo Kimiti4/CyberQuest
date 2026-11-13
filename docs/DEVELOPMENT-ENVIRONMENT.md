@@ -1,6 +1,6 @@
 # Development Environment Baseline
 
-**Status: backend foundation reproducible; Android and web toolchains not yet implemented or certified.**
+**Status: backend foundation, Android/Linux build, Windows wrapper smoke and web build foundations verified in CI on candidate `0c95b30c990d0a9fc0247ded70fd5bf163f27261`.**
 
 ## Verified backend CI environment
 
@@ -16,15 +16,15 @@ This verifies the existing backend foundation scope, not production deployment o
 
 ## Android environment
 
-Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. No Android project, wrapper, SDK, emulator or successful build/test currently exists in the repository.
+Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. The minimal Android Compose project, Gradle wrapper scripts and checksum-verified wrapper payload are now present on the CQ-00.5 branch. Linux CI verified clean Gradle build, JUnit execution, debug APK assembly and lint with Gradle build cache disabled; Windows CI verified wrapper materialization, SHA-256 and Gradle startup.
 
-At scaffold creation, choose a mutually compatible Kotlin/AGP/Gradle/JDK tuple from official compatibility matrices. Commit wrapper scripts/JAR and distribution checksum, dependency verification configuration, exact JDK patch, compile/target SDK and build-tools versions. CI must run clean assemble, unit tests, lint and emulator smoke/instrumentation tests.
+Current Android pins are JDK 17.0.17+10, AGP 8.11.1, Kotlin/Compose compiler 2.2.21, Gradle 8.13 and Android SDK/build-tools 36/36.0.0. The Gradle wrapper payload and distribution are checksum-verified. CI runs clean assemble, unit tests and lint; emulator smoke/instrumentation remains deferred.
 
 ## Web environment
 
-Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. Exact Node patch, Next.js/React versions and package manager must be pinned when the scaffold is created.
+Candidate stack: Next.js 16, TypeScript, Node.js LTS and npm. CQ-00.5 pins Node 24.22.3, npm 11.19.1, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. `web/package-lock.json` is committed (308 package entries; 307 resolved packages with integrity hashes). CI runs `npm ci`, TypeScript typecheck, five Node contract tests, warning-free Redocly lint and Next.js production build.
 
-Commit the selected package manager's lockfile and use immutable installation (`npm ci` if npm is selected). CI must run lint, typecheck, unit tests and production build; add browser smoke tests before integration claims.
+Browser smoke tests remain required before claiming cross-client integration.
 
 ## Local Python setup
 
@@ -45,10 +45,9 @@ Commit the selected package manager's lockfile and use immutable installation (`
 
 - Hash-lock the bootstrap lock compiler and assess artifact provenance.
 - Pin immutable runner/container images where operationally justified.
-- Create and build the Android scaffold on clean CI.
-- Create and build the web scaffold on clean CI.
-- Contract-test OpenAPI and client compatibility.
+- Add emulator/instrumentation smoke tests.
+- Contract-test OpenAPI against a live backend and validate Android/web API compatibility.
 - Select production identity/session design and provider only after threat-model review.
 - Execute backup restore and document provider cost/data-residency decisions.
 
-Until Android and web builds execute from clean pinned environments, full cross-platform toolchain readiness remains PARTIAL.
+CQ-00.5 build foundations PASS on candidate `0c95b30c990d0a9fc0247ded70fd5bf163f27261`. Emulator/instrumentation, API/client integration and production readiness remain unverified.
