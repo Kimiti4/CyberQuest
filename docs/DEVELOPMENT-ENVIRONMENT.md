@@ -22,7 +22,7 @@ At scaffold creation, choose a mutually compatible Kotlin/AGP/Gradle/JDK tuple f
 
 ## Web environment
 
-Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. CQ-00.5 pins Node 22.16.0, npm 10.9.2, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. The first CI run bootstraps package-lock.json as a temporary artifact; commit that generated lock and rerun CI before declaring reproducibility.
+Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. CQ-00.5 pins Node 24.22.3, npm 11.19.1, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. The first CI run bootstraps package-lock.json as a temporary artifact; commit that generated lock and rerun CI before declaring reproducibility.
 
 Commit the selected package manager's lockfile and use immutable installation (`npm ci` if npm is selected). CI must run lint, typecheck, unit tests and production build; add browser smoke tests before integration claims.
 
