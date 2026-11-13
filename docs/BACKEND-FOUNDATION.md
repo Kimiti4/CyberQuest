@@ -23,6 +23,6 @@
 
 ## Dependency verification
 
-The direct dependency pins in `requirements-api.txt` and `requirements-test.txt` are candidate pins. CI verifies their compatibility on Python 3.12; this is not a fully transitive lockfile. A hash-locked dependency solution remains a CQ-00 exit requirement.
+The canonical direct dependency declarations live in `pyproject.toml`; CI consumes committed `requirements-lock.txt` with pip `--require-hashes` and regenerates a temporary lock to reject drift. Workflow run `43494824837` verified lock consistency, hash-enforced installation, `pip check`, PostgreSQL migration/schema/downgrade/re-upgrade and the 18-test suite (1 warning). This verifies the current Python backend foundation scope, not a hermetic build, production deployment or complete application behavior.
 
 PostgreSQL runtime verification is PASS only for a completed workflow on the exact commit containing the integration tests. A commit or queued workflow is not evidence.
