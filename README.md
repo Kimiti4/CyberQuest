@@ -39,6 +39,8 @@ These are proposed choices until their compatibility and operational fit are ver
 
 - [Product baseline](docs/PRODUCT-BASELINE.md)
 - [Architecture](docs/ARCHITECTURE.md)
+- [CQ-00.4 architecture review](docs/CQ-00.4-ARCHITECTURE-REVIEW.md)
+- [Cross-platform toolchain matrix](docs/CQ-00.4-TOOLCHAIN-MATRIX.md)
 - [Security and privacy](docs/SECURITY-AND-PRIVACY.md)
 - [CQ-00 acceptance gates](docs/CQ-00-ACCEPTANCE.md)
 - [Requirements traceability](docs/TRACEABILITY.md)
