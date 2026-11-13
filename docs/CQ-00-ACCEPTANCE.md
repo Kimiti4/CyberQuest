@@ -6,7 +6,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 |---|---|---|---|
 | CQ00-01 | Repository and change governance | Repo metadata, branch convention, reviewed PR process | IN PROGRESS |
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
-| CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed; founder ratification and client contract verification pending | PARTIAL |
+| CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed and founder-ratified | PARTIAL |
 | CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
 | CQ00-05 | Reproducible toolchain | Python 3.12.16, committed transitive hash lock, locked CI install and drift rejection verified; Android/web toolchains not implemented | PARTIAL |
 | CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
@@ -18,11 +18,9 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 ## Evidence notes
 
 - CQ-00.3 Python dependency verification: workflow run 43494824837 passed on candidate `ccd7ddcbd2c680866b561ede6cfc148ab743ff98`; lock drift check, hash-enforced install, `pip check`, PostgreSQL migration/schema/downgrade/re-upgrade and 18 tests passed (1 warning). The Python portion of CQ00-05 is VERIFIED; the overall gate remains PARTIAL pending Android/web toolchains.
-
-- CQ-00.4 architecture review: `docs/CQ-00.4-ARCHITECTURE-REVIEW.md`, ADR-0004 (unified platform boundaries) and ADR-0005 (offline sync authority) are proposed design decisions, not founder-ratified requirements.
-- CQ-00.4 toolchain assessment: Python backend foundation verified by run 43494824837; Android and web projects/builds are absent and remain NOT IMPLEMENTED / NOT RUN. Official compatibility references and scaffold acceptance requirements are recorded in `docs/CQ-00.4-TOOLCHAIN-MATRIX.md`.
+- CQ-00.4 architecture review: `docs/CQ-00.4-ARCHITECTURE-REVIEW.md`; ADR-0004 and ADR-0005 were ratified by the founder on 2026-11-14. Their decisions are now accepted architecture constraints.
+- CQ-00.4 toolchain assessment: Python backend foundation verified by run 43494824837; Android and web projects/builds were absent at CQ-00.4 close and remain NOT IMPLEMENTED / NOT RUN until CQ-00.5 supplies evidence. Official compatibility references and scaffold acceptance requirements are recorded in `docs/CQ-00.4-TOOLCHAIN-MATRIX.md`.
 - `tests/test_architecture_contract.py` checks selected documented invariants. It is a documentation contract test, not runtime proof of Android/web/API behavior.
-
 - Draft OpenAPI contract: `openapi/cyberquest-v1.json` (design artefact; not a claim of complete API implementation).
 - API rules: `docs/API-CONTRACT.md`.
 - Conceptual entities and migration policy: `docs/DATA-MODEL.md`.
