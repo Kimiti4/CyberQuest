@@ -1,7 +1,8 @@
 # ADR-0004: Unified Platform and Cross-Pillar Boundaries
 
-- **Status:** PROPOSED — requires founder ratification
+- **Status:** ACCEPTED — founder ratified 2026-11-14
 - **Date:** 2026-11-13
+- **Ratification:** Founder approval recorded in the CYBERQUEST project conversation on 2026-11-14.
 - **Checkpoint:** CQ-00.4
 
 ## Context
