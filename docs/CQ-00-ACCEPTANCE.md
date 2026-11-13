@@ -8,7 +8,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
 | CQ00-03 | Architecture | Reviewed topology, authority boundaries, data and API direction | DRAFT |
 | CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
-| CQ00-05 | Reproducible toolchain | Python runtime and direct backend dependencies pinned; full transitive hash lock and Android/web toolchains pending | PARTIAL |
+| CQ00-05 | Reproducible toolchain | Python 3.12.16 backend environment, committed transitive hash lock, locked CI installation and drift rejection verified; Android/web toolchains remain pending | PARTIAL |
 | CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
 | CQ00-07 | Automated verification | PostgreSQL-backed CI passed 18 tests on PR merge candidate; broader runtime, Android, web and security verification remain pending | PARTIAL |
 | CQ00-08 | Traceability | Requirements map to implementation and executable verification | DRAFT |
@@ -16,6 +16,8 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-10 | CQ-00 review | All blockers resolved or explicitly accepted; owner sign-off | NOT STARTED |
 
 ## Evidence notes
+
+- CQ-00.3 Python dependency verification: run 43494824837 succeeded on candidate `ccd7ddcbd2c680866b561ede6cfc148ab743ff98`; committed lock drift check, `--require-hashes` install, `pip check`, PostgreSQL migration/schema/downgrade/re-upgrade and 18-test suite passed (1 warning). Artifact `cq00-python-dependency-lock` (ID `14070308973`, SHA-256 `675af19fbd6558b1b6d5d9128fbca80bfbb36da1487b1ba5bd50b9fb4e84281c`) was produced. Follow-up commit `fdefbe5350f96d01b3a0695ea84d785fd40e0933` records evidence. Python portion of CQ00-05 is VERIFIED; overall toolchain gate remains PARTIAL until Android and web toolchains are established.
 
 - Draft OpenAPI contract: `openapi/cyberquest-v1.json` (design artefact; not a claim of complete API implementation).
 - API rules: `docs/API-CONTRACT.md`.
