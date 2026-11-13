@@ -8,7 +8,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
 | CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed; founder ratification and client contract verification pending | PARTIAL |
 | CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
-| CQ00-05 | Reproducible toolchain | Python runtime and direct backend dependencies pinned; full transitive hash lock and Android/web toolchains pending | PARTIAL |
+| CQ00-05 | Reproducible toolchain | Python 3.12.16, committed transitive hash lock, locked CI install and drift rejection verified; Android/web toolchains not implemented | PARTIAL |
 | CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
 | CQ00-07 | Automated verification | PostgreSQL-backed CI passed 18 tests on PR merge candidate; broader runtime, Android, web and security verification remain pending | PARTIAL |
 | CQ00-08 | Traceability | Requirements map to implementation and executable verification | DRAFT |
@@ -16,6 +16,8 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-10 | CQ-00 review | All blockers resolved or explicitly accepted; owner sign-off | NOT STARTED |
 
 ## Evidence notes
+
+- CQ-00.3 Python dependency verification: workflow run 43494824837 passed on candidate `ccd7ddcbd2c680866b561ede6cfc148ab743ff98`; lock drift check, hash-enforced install, `pip check`, PostgreSQL migration/schema/downgrade/re-upgrade and 18 tests passed (1 warning). The Python portion of CQ00-05 is VERIFIED; the overall gate remains PARTIAL pending Android/web toolchains.
 
 - CQ-00.4 architecture review: `docs/CQ-00.4-ARCHITECTURE-REVIEW.md`, ADR-0004 (unified platform boundaries) and ADR-0005 (offline sync authority) are proposed design decisions, not founder-ratified requirements.
 - CQ-00.4 toolchain assessment: Python backend foundation verified by run 43494824837; Android and web projects/builds are absent and remain NOT IMPLEMENTED / NOT RUN. Official compatibility references and scaffold acceptance requirements are recorded in `docs/CQ-00.4-TOOLCHAIN-MATRIX.md`.
