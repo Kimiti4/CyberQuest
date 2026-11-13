@@ -62,3 +62,17 @@ def test_data_model_documents_append_only_rewards_and_version_pinning() -> None:
     assert "XP ledger is append-only" in model
     assert "Attempt records pin immutable content/assessment versions" in model
     assert "no database schema or migration has been applied" in model
+
+
+def test_ci_uses_read_only_permissions_and_pinned_actions() -> None:
+    workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    assert "permissions:\n  contents: read" in workflow
+    assert "actions/checkout@11d5960a326750d5838078e36cf38b85af677262" in workflow
+    assert "actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065" in workflow
+    assert "runs-on: ubuntu-24.04" in workflow
+
+
+def test_gitignore_excludes_secrets_and_local_build_artifacts() -> None:
+    ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    for pattern in [".env", ".env.*", "*.pem", "*.key", "secrets/", "local.properties", ".venv/"]:
+        assert pattern in ignored

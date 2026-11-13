@@ -4,10 +4,10 @@
 
 ## Verified CI environment
 
-- Runner: GitHub-hosted `ubuntu-latest`
+- Runner: GitHub-hosted `ubuntu-24.04` (image contents remain maintained by GitHub; this is not a byte-for-byte immutable runner image)
 - Python: 3.12.16 (observed in the successful CQ-00 workflow run)
 - Pytest: 9.2.0
-- Foundation suite: 3 tests passed on commit `d06a818b15954a29ae12b4b3b8538fb434203e80`
+- Foundation suite: 7 tests passed on commit `0a6cbf62fe837990b38aa9ee519be289528f05c2` (workflow run 43469295571 and PR run 43469279581).
 
 This is evidence for the foundation test harness only. It does not verify FastAPI, PostgreSQL, Android, web, migrations or deployment.
 
@@ -30,7 +30,8 @@ The API dependency extra in `pyproject.toml` is a proposed dependency set and ha
 
 ## Deferred environment work
 
-- Pin and verify all backend dependency versions and generate a lock file.
+- Install and verify the complete backend dependency set; generate and review a lock file.
+- Record the resolved GitHub Action commit SHAs and keep them pinned in CI.
 - Select and pin Node.js, package manager and Android Gradle/JDK toolchains.
 - Provision a disposable PostgreSQL test service and verify migrations/restore.
 - Add local compose/devcontainer only after the service topology is selected.
