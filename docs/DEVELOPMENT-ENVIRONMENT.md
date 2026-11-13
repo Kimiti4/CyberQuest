@@ -1,6 +1,6 @@
 # Development Environment Baseline
 
-**Status: backend foundation, Android/Linux build, Windows wrapper smoke and web build foundations verified in CI on candidate `0b1c2d5642dd5b8641f519c586b6a8f60bbc9b61`.**
+**Status: backend foundation, Android/Linux build, Windows wrapper smoke and web build foundations verified in CI on candidate `0c95b30c990d0a9fc0247ded70fd5bf163f27261`.**
 
 ## Verified backend CI environment
 
@@ -50,4 +50,4 @@ Browser smoke tests remain required before claiming cross-client integration.
 - Select production identity/session design and provider only after threat-model review.
 - Execute backup restore and document provider cost/data-residency decisions.
 
-CQ-00.5 build foundations PASS on candidate `0b1c2d5642dd5b8641f519c586b6a8f60bbc9b61`. Emulator/instrumentation, API/client integration and production readiness remain unverified.
+CQ-00.5 build foundations PASS on candidate `0c95b30c990d0a9fc0247ded70fd5bf163f27261`. Emulator/instrumentation, API/client integration and production readiness remain unverified.
