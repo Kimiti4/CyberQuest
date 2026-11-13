@@ -83,5 +83,5 @@ def test_ci_uses_read_only_permissions_and_pinned_actions() -> None:
 
 def test_gitignore_excludes_secrets_and_local_build_artifacts() -> None:
     ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    for pattern in [".env", ".env.*", "*.pem", "*.key", "secrets/", "local.properties", ".venv/"]:
+    for pattern in [".env", ".env.*", "*.pem", "*.key", "secrets/", "local.properties", ".venv/", "android/gradle/wrapper/gradle-wrapper.jar"]:
         assert pattern in ignored
