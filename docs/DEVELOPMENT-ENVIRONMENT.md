@@ -1,40 +1,54 @@
 # Development Environment Baseline
 
-**Status: partially reproducible foundation; full-stack environment not yet certified.**
+**Status: backend foundation reproducible; Android and web toolchains not yet implemented or certified.**
 
-## Verified CI environment
+## Verified backend CI environment
 
-- Runner: GitHub-hosted `ubuntu-24.04` (image contents remain maintained by GitHub; this is not a byte-for-byte immutable runner image)
-- Python: 3.12.16 (observed in the successful CQ-00 workflow run)
-- Pytest: 9.2.0
-- Foundation suite: 7 tests passed on commit `0a6cbf62fe837990b38aa9ee519be289528f05c2` (workflow run 43469295571 and PR run 43469279581).
+- Runner: GitHub-hosted `ubuntu-24.04`; image contents are maintained by GitHub and are not a byte-for-byte immutable runner image.
+- Python: `3.12.16`.
+- Dependency source: `pyproject.toml` optional groups and committed `requirements-lock.txt`.
+- Lock compiler: `pip-tools==7.6.2` (version-pinned; its bootstrap install is not itself hash-locked).
+- Installation: pip `--require-hashes`; CI regenerates a temporary lock and diffs it against the committed lock.
+- PostgreSQL: version 16 CI service.
+- Evidence: workflow run `43494824837`, candidate `ccd7ddc`; committed lock drift check, hash-enforced installation, `pip check`, Alembic migration/schema/downgrade/re-upgrade and 18-test suite passed (1 warning).
 
-This is evidence for the foundation test harness only. It does not verify FastAPI, PostgreSQL, Android, web, migrations or deployment.
+This verifies the existing backend foundation scope, not production deployment or complete application behavior.
+
+## Android environment
+
+Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. No Android project, wrapper, SDK, emulator or successful build/test currently exists in the repository.
+
+At scaffold creation, choose a mutually compatible Kotlin/AGP/Gradle/JDK tuple from official compatibility matrices. Commit wrapper scripts/JAR and distribution checksum, dependency verification configuration, exact JDK patch, compile/target SDK and build-tools versions. CI must run clean assemble, unit tests, lint and emulator smoke/instrumentation tests.
+
+## Web environment
+
+Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. Exact Node patch, Next.js/React versions and package manager must be pinned when the scaffold is created.
+
+Commit the selected package manager's lockfile and use immutable installation (`npm ci` if npm is selected). CI must run lint, typecheck, unit tests and production build; add browser smoke tests before integration claims.
 
 ## Local Python setup
 
-1. Install Python 3.12.x.
-2. Create a virtual environment: `python -m venv .venv`.
-3. Activate the environment.
-4. Install the foundation test runner: `python -m pip install "pytest==9.2.0"`.
-5. Run: `python -m pytest`.
+1. Install Python 3.12.16.
+2. Create and activate a virtual environment.
+3. Install the committed lock with `python -m pip install --require-hashes -r requirements-lock.txt`.
+4. Run `python -m pip check`.
+5. Configure a disposable PostgreSQL 16 database and `DATABASE_URL` for migrations/integration tests.
+6. Run `python -m pytest`.
 
-The API dependency extra in `pyproject.toml` is a proposed dependency set and has not yet been installed or compatibility-tested as a whole.
-
-## Environment and secrets
+## Secrets and data
 
 - Never commit `.env`, access tokens, private keys, signing keys or real learner data.
-- Use a local untracked `.env` and provide a redacted `.env.example` only when application configuration is introduced.
-- CI receives only the minimum required permissions; no deployment credentials are configured.
-- Do not put secrets in workflow output or test fixtures.
+- CI receives minimum required permissions; no deployment credentials are configured.
+- Never put secrets in workflow output or test fixtures.
 
 ## Deferred environment work
 
-- Install and verify the complete backend dependency set; generate and review a lock file.
-- Record the resolved GitHub Action commit SHAs and keep them pinned in CI.
-- Select and pin Node.js, package manager and Android Gradle/JDK toolchains.
-- Provision a disposable PostgreSQL test service and verify migrations/restore.
-- Add local compose/devcontainer only after the service topology is selected.
-- Document supported OS setup and resource requirements.
+- Hash-lock the bootstrap lock compiler and assess artifact provenance.
+- Pin immutable runner/container images where operationally justified.
+- Create and build the Android scaffold on clean CI.
+- Create and build the web scaffold on clean CI.
+- Contract-test OpenAPI and client compatibility.
+- Select production identity/session design and provider only after threat-model review.
+- Execute backup restore and document provider cost/data-residency decisions.
 
-Until these steps are executed, the full development environment gate remains PARTIAL/NOT RUN.
+Until Android and web builds execute from clean pinned environments, full cross-platform toolchain readiness remains PARTIAL.
