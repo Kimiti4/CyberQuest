@@ -69,9 +69,15 @@ def test_ci_uses_read_only_permissions_and_pinned_actions() -> None:
     assert "permissions:\n  contents: read" in workflow
     assert "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1" in workflow
     assert "actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0" in workflow
-    action_lines = [line.strip().split()[1] for line in workflow.splitlines() if line.strip().startswith("- uses:")]
-    assert action_lines
-    assert all("@" in action and len(action.rsplit("@", 1)[1]) == 40 for action in action_lines)
+    for path in [".github/workflows/ci.yml", ".github/workflows/cross-platform-ci.yml"]:
+        action_workflow = (ROOT / path).read_text(encoding="utf-8")
+        action_lines = [
+            line.split("uses:", 1)[1].strip().split()[0]
+            for line in action_workflow.splitlines()
+            if "uses:" in line
+        ]
+        assert action_lines, path
+        assert all("@" in action and len(action.rsplit("@", 1)[1]) == 40 for action in action_lines), path
     assert "runs-on: ubuntu-24.04" in workflow
 
 
