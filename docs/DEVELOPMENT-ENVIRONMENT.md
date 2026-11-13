@@ -18,7 +18,7 @@ This verifies the existing backend foundation scope, not production deployment o
 
 Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. The minimal Android Compose project, Gradle wrapper scripts and checksum-verified wrapper payload are now present on the CQ-00.5 branch. The Android SDK build/test job has not yet supplied a verified result.
 
-At scaffold creation, choose a mutually compatible Kotlin/AGP/Gradle/JDK tuple from official compatibility matrices. Commit wrapper scripts and checksum-verifiable wrapper payload, distribution checksum, exact JDK patch, compile/target SDK and build-tools versions. CI must run clean assemble, unit tests, lint and emulator smoke/instrumentation tests.
+Current Android pins are JDK 17.0.17+10, AGP 8.11.1, Kotlin/Compose compiler 2.2.21, Gradle 8.13 and Android SDK/build-tools 36/36.0.0. The Gradle wrapper payload and distribution are checksum-verified. CI runs clean assemble, unit tests and lint; emulator smoke/instrumentation remains deferred.
 
 ## Web environment
 
