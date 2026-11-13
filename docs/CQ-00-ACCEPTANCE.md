@@ -17,7 +17,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 
 ## Evidence notes
 
-- CQ-00.3 Python dependency verification: workflow run 43494824837 passed on candidate `ccd7ddcbd2c680866b561ede6cfc148ab743ff98`; lock drift check, hash-enforced install, `pip check`, PostgreSQL migration/schema/downgrade/re-upgrade and 18 tests passed (1 warning). The Python portion of CQ00-05 is VERIFIED; the overall gate remains PARTIAL pending Android/web toolchains.
+- CQ-00.3 Python dependency verification: workflow run 43494824837 passed on candidate `ccd7ddcbd2c680866b561ede6cfc148ab743ff98`; lock drift check, hash-enforced install, `pip check`, PostgreSQL migration/schema/downgrade/re-upgrade and 18 tests passed (1 warning). The Python portion of CQ00-05 is VERIFIED; Android and web evidence for the complete gate is recorded in the CQ-00.5 candidate results below.
 - CQ-00.4 architecture review: `docs/CQ-00.4-ARCHITECTURE-REVIEW.md`; ADR-0004 and ADR-0005 were ratified by the founder on 2026-11-14. Their decisions are now accepted architecture constraints.
 - CQ-00.4 toolchain assessment: Python backend foundation verified by run 43494824837; Android and web projects/builds were absent at CQ-00.4 close. CQ-00.5 adds the client scaffolds and CI evidence recorded below.
 - `tests/test_architecture_contract.py` checks selected documented invariants. It is a documentation contract test, not runtime proof of Android/web/API behavior.
