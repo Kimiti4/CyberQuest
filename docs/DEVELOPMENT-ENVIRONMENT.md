@@ -1,6 +1,6 @@
 # Development Environment Baseline
 
-**Status: backend foundation verified; Android and web scaffolds introduced in CQ-00.5; current clean-build evidence pending.**
+**Status: backend foundation verified; Android/Linux, Windows wrapper and web build foundations passed CI on candidate fa43; latest head revalidation pending.**
 
 ## Verified backend CI environment
 
@@ -16,13 +16,13 @@ This verifies the existing backend foundation scope, not production deployment o
 
 ## Android environment
 
-Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. The minimal Android Compose project, Gradle wrapper scripts and checksum-verified wrapper payload are now present on the CQ-00.5 branch. The Android SDK build/test job has not yet supplied a verified result.
+Candidate stack: Kotlin, Jetpack Compose, Gradle Wrapper, Android Gradle Plugin and JDK. The minimal Android Compose project, Gradle wrapper scripts and checksum-verified wrapper payload are now present on the CQ-00.5 branch. Linux CI verified clean Gradle build, JUnit execution, debug APK assembly and lint with Gradle build cache disabled; Windows CI verified wrapper materialization, SHA-256 and Gradle startup.
 
 Current Android pins are JDK 17.0.17+10, AGP 8.11.1, Kotlin/Compose compiler 2.2.21, Gradle 8.13 and Android SDK/build-tools 36/36.0.0. The Gradle wrapper payload and distribution are checksum-verified. CI runs clean assemble, unit tests and lint; emulator smoke/instrumentation remains deferred.
 
 ## Web environment
 
-Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. CQ-00.5 pins Node 24.22.3, npm 11.19.1, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. The first CI run bootstraps package-lock.json as a temporary artifact; commit that generated lock and rerun CI before declaring reproducibility.
+Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. CQ-00.5 pins Node 24.22.3, npm 11.19.1, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. `web/package-lock.json` is committed (308 package entries; 307 resolved packages with integrity hashes). CI runs `npm ci`, TypeScript typecheck, Node contract tests, Redocly lint and Next.js production build.
 
 Commit the selected package manager's lockfile and use immutable installation (`npm ci` if npm is selected). CI must run lint, typecheck, unit tests and production build; add browser smoke tests before integration claims.
 
@@ -51,4 +51,4 @@ Commit the selected package manager's lockfile and use immutable installation (`
 - Select production identity/session design and provider only after threat-model review.
 - Execute backup restore and document provider cost/data-residency decisions.
 
-Until Android and web builds execute from clean pinned environments, full cross-platform toolchain readiness remains PARTIAL.
+CQ-00.5 build foundations passed on candidate fa43. Latest branch revalidation is pending; emulator/instrumentation, API/client integration and production readiness remain unverified.
