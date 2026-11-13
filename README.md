@@ -8,9 +8,9 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 
 - Current checkpoint: **CQ-00 — Product and Engineering Foundation**
 - Repository: [Kimiti4/CyberQuest](https://github.com/Kimiti4/CyberQuest)
-- Working branch: `feat/cq-00-foundation`
 - Default branch: `main`
 - CQ-00 status: **IN PROGRESS**
+- Current architecture review: **CQ-00.4 — PARTIAL; founder decisions and Android/web build evidence pending**
 - No production application, real device scanning, malware detection or cyber-range execution is claimed.
 
 ## Product principles
