@@ -74,11 +74,11 @@ set CLASSPATH=%APP_HOME%\gradle\wrapper\gradle-wrapper.jar
 
 
 @rem Materialize and verify the official Gradle wrapper JAR
-if not exist "%APP_HOME%\\gradle\\wrapper\\gradle-wrapper.jar" (
-  powershell -NoProfile -NonInteractive -Command "[IO.File]::WriteAllBytes('%APP_HOME%\\gradle\\wrapper\\gradle-wrapper.jar', [Convert]::FromBase64String((Get-Content -Raw '%APP_HOME%\\gradle\\wrapper\\gradle-wrapper.jar.base64')))"
+if not exist "%APP_HOME%\gradle\wrapper\gradle-wrapper.jar" (
+  powershell -NoProfile -NonInteractive -Command "[IO.File]::WriteAllBytes('%APP_HOME%\gradle\wrapper\gradle-wrapper.jar', [Convert]::FromBase64String((Get-Content -Raw '%APP_HOME%\gradle\wrapper\gradle-wrapper.jar.base64')))"
   if errorlevel 1 exit /b 1
 )
-for /f "tokens=1" %%H in ('certutil -hashfile "%APP_HOME%\\gradle\\wrapper\\gradle-wrapper.jar" SHA256 ^| findstr /r /v "hash CertUtil"') do set WRAPPER_SHA=%%H
+for /f "tokens=1" %%H in ('certutil -hashfile "%APP_HOME%\gradle\wrapper\gradle-wrapper.jar" SHA256 ^| findstr /r /v "hash CertUtil"') do set WRAPPER_SHA=%%H
 if /I not "%WRAPPER_SHA%"=="81A82AAEA5ABCC8FF68B3DFCB58B3C3C429378EFD98E7433460610FECD7AE45F" (
   echo Gradle wrapper JAR checksum mismatch 1>&2
   exit /b 1
