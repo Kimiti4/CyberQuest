@@ -37,5 +37,5 @@ test("health probes are explicitly public", () => {
 
 test("OpenAPI tags are documented and no production endpoint is implied", () => {
   assert.ok(contract.tags.every((tag) => tag.description?.trim()));
-  assert.ok(contract.servers.every((server) => server.url.startsWith("http://localhost:")));
+  assert.ok(!contract.servers || contract.servers.length === 0);
 });
