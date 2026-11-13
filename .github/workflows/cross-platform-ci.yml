@@ -45,11 +45,11 @@ jobs:
         working-directory: web
         run: |
           if [ ! -f package-lock.json ]; then
-            npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+            npm install --package-lock-only --no-audit --no-fund
           fi
       - name: Install exact locked dependencies
         working-directory: web
-        run: npm ci --ignore-scripts --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: Verify runtime versions
         working-directory: web
         run: |
