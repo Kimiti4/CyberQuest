@@ -45,7 +45,7 @@ Commit the selected package manager's lockfile and use immutable installation (`
 
 - Hash-lock the bootstrap lock compiler and assess artifact provenance.
 - Pin immutable runner/container images where operationally justified.
-- Review the Android clean-build CI result and add emulator-backed smoke verification.
+- Review Linux Android clean-build and Windows wrapper smoke CI results; emulator-backed smoke verification remains deferred.
 - Commit the generated npm lock artifact and rerun the web job using npm ci from the committed lock.
 - Contract-test OpenAPI and client compatibility.
 - Select production identity/session design and provider only after threat-model review.
