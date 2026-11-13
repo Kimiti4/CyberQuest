@@ -27,6 +27,7 @@ coverage/
 
 # Android / Gradle
 .gradle/
+android/gradle/wrapper/gradle-wrapper.jar
 **/build/
 local.properties
 *.jks
