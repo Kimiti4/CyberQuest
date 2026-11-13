@@ -23,6 +23,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 - Development environment evidence and outstanding toolchain work: `docs/DEVELOPMENT-ENVIRONMENT.md`.
 - Backend implementation and boundaries: `docs/BACKEND-FOUNDATION.md`.
 - PostgreSQL CI run 43471996771: migration upgrade, schema inspection, downgrade/re-upgrade and complete test suite succeeded; pytest reported 18 passed, 1 warning. The run tested PR merge candidate `1f866a9179cfedf3d94d8340c8ab50f1ba1d3219`, containing source commit `6b2f564277d0a7af92a83bea3369feeba924ca3c`. The documentation-only follow-up commit is separately verified by its own workflow before this register is treated as current-head CI evidence.
+- PostgreSQL CI run 43494824837: verified committed `requirements-lock.txt` is up to date with `pyproject.toml`, installed it in hash-checking mode, `pip check` passed, migration upgrade/schema/downgrade/re-upgrade passed, and complete test suite reported 18 passed, 1 warning. Candidate commit `ccd7ddc` on `feat/cq-00-3-dependency-lock`.
 
 ## Status vocabulary
 
