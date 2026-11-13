@@ -7,7 +7,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-01 | Repository and change governance | Repo metadata, branch convention, reviewed PR process | IN PROGRESS |
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
 | CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed and founder-ratified | PASS |
-| CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
+| CQ00-04 | Security and privacy | STRIDE threat model, privacy data inventory, Kenyan legal workstream, cyber-safety boundaries and implementation/verification plan | PARTIAL — design baseline documented; legal/privacy decisions and runtime controls remain open |
 | CQ00-05 | Reproducible toolchain | Python hash lock plus pinned Android/web toolchains, committed wrapper and npm lock, clean CI builds | PASS |
 | CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
 | CQ00-07 | Automated verification | PostgreSQL-backed CI, Android unit tests and web contract tests; integration, emulator and security verification remain pending | PARTIAL |
@@ -36,6 +36,8 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 - Web: `npm ci` from committed lock, TypeScript typecheck, five Node contract tests, warning-free Redocly lint and Next.js 16.4.0 production build passed. No server URL is declared because no API deployment exists; Redocly's empty-server rule is explicitly disabled and placeholder server URLs are rejected.
 - Python/PostgreSQL: lock drift check, hash-enforced install, `pip check`, migration upgrade/schema/downgrade/re-upgrade and full suite passed (25 passed, 1 non-blocking Starlette TestClient/AnyIO deprecation warning).
 - Committed web lock: `web/package-lock.json` at commit `87c792de906cd1dd4b0d777efb75798cee01f77f`; lockfileVersion 3, 308 package entries, 307 resolved packages with integrity hashes, SHA-256 `b1ee9065901b18543385e071878bcf5259a4dd0e10cb75cea8c0c2432805102a`.
+
+- CQ-00.6 threat model: `docs/CQ-00.6-SECURITY-PRIVACY-THREAT-MODEL.md` and `docs/CQ-00.6-SECURITY-VERIFICATION-PLAN.md`; STRIDE threats, data inventory, child-data and cross-border legal workstreams, MVP content safety, future lab gates and adversarial verification requirements documented. Five documentation contract tests added. CI execution on this checkpoint branch is pending. This is design evidence only; no production security control, DPIA, legal review, identity integration, authorization implementation or runtime security test is claimed. CQ00-04 remains PARTIAL.
 
 ## Status vocabulary
 
