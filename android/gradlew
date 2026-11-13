@@ -248,4 +248,11 @@ eval "set -- $(
         tr '\n' ' '
     )" '"$@"'
 
+WRAPPER_JAR="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
+if [ ! -f "$WRAPPER_JAR" ]; then
+    base64 -d "$APP_HOME/gradle/wrapper/gradle-wrapper.jar.base64" > "$WRAPPER_JAR"
+fi
+EXPECTED_WRAPPER_SHA256=81a82aaea5abcc8ff68b3dfcb58b3c3c429378efd98e7433460610fecd7ae45f
+ACTUAL_WRAPPER_SHA256=$(sha256sum "$WRAPPER_JAR" | cut -d ' ' -f 1)
+[ "$ACTUAL_WRAPPER_SHA256" = "$EXPECTED_WRAPPER_SHA256" ] || die "Gradle wrapper JAR checksum mismatch"
 exec "$JAVACMD" "$@"
