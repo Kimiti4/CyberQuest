@@ -2,9 +2,13 @@ name: foundation-ci
 
 on:
   push:
-    branches: [main, "feat/**", "fix/**", "docs/**"]
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+concurrency:
+  group: foundation-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
