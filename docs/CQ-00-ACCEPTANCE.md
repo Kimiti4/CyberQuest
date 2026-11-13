@@ -8,7 +8,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
 | CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed and founder-ratified | PASS |
 | CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
-| CQ00-05 | Reproducible toolchain | Python hash lock plus pinned Android/web toolchains, committed wrapper and npm lock, clean CI builds | PARTIAL — latest head revalidation pending |
+| CQ00-05 | Reproducible toolchain | Python hash lock plus pinned Android/web toolchains, committed wrapper and npm lock, clean CI builds | PASS |
 | CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
 | CQ00-07 | Automated verification | PostgreSQL-backed CI, Android unit tests and web contract tests; integration, emulator and security verification remain pending | PARTIAL |
 | CQ00-08 | Traceability | Requirements map to implementation and executable verification | DRAFT |
@@ -30,10 +30,12 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 - PostgreSQL CI run 43471996771: migration upgrade, schema inspection, downgrade/re-upgrade and complete test suite succeeded; pytest reported 18 passed, 1 warning. The run tested PR merge candidate `1f866a9179cfedf3d94d8340c8ab50f1ba1d3219`, containing source commit `6b2f564277d0a7af92a83bea3369feeba924ca3c`. The documentation-only follow-up commit is separately verified by its own workflow before this register is treated as current-head CI evidence.
 - PostgreSQL CI run 43494824837: verified committed `requirements-lock.txt` is up to date with `pyproject.toml`, installed it in hash-checking mode, `pip check` passed, migration upgrade/schema/downgrade/re-upgrade passed, and complete test suite reported 18 passed, 1 warning. Candidate commit `ccd7ddc` on `feat/cq-00-3-dependency-lock`.
 - CQ-00.4 ratification: ADR-0004 and ADR-0005 were accepted by the founder on 2026-11-14. Ratified branch head `e1387436ecb1ae036ae345356f7f64d71b41b899` had 2 successful CI check runs.
-- CQ-00.5 candidate cross-platform run `43509473638` on `fa43b4919dfef70f371a22e9b46a1c2c068eae70`: Linux Android clean build, JUnit unit test, debug APK assembly and lint passed with build cache disabled (56 tasks; 55 executed, 1 up-to-date); Windows wrapper materialization/checksum/Gradle 8.13 startup passed; web `npm ci`, typecheck, Node contract tests, Redocly lint and Next.js production build passed. The Redocly run reported one intentional `no-empty-servers` warning because no deployment URL is declared; the rule is now explicitly disabled while placeholder server URLs remain forbidden.
-- CQ-00.5 Python foundation run `43509473698` on the same candidate: lock drift check, hash-enforced install, `pip check`, migration upgrade/schema/downgrade/re-upgrade and complete suite passed (25 passed, 1 warning). The remaining warning is a Starlette TestClient/AnyIO deprecation warning.
+- CQ-00.5 cross-platform run `43510026173` and Python/PostgreSQL foundation run `43510026113` both passed on candidate `0b1c2d5642dd5b8641f519c586b6a8f60bbc9b61`.
+- Android/Linux: Gradle 8.13 clean build, uncached JUnit execution, debug APK assembly and lint passed (56 tasks; 55 executed, 1 up-to-date).
+- Android/Windows: PowerShell materialized the official wrapper payload, verified its SHA-256 and started Gradle 8.13 successfully.
+- Web: `npm ci` from committed lock, TypeScript typecheck, five Node contract tests, warning-free Redocly lint and Next.js 16.4.0 production build passed. No server URL is declared because no API deployment exists; Redocly's empty-server rule is explicitly disabled and placeholder server URLs are rejected.
+- Python/PostgreSQL: lock drift check, hash-enforced install, `pip check`, migration upgrade/schema/downgrade/re-upgrade and full suite passed (25 passed, 1 non-blocking Starlette TestClient/AnyIO deprecation warning).
 - Committed web lock: `web/package-lock.json` at commit `87c792de906cd1dd4b0d777efb75798cee01f77f`; lockfileVersion 3, 308 package entries, 307 resolved packages with integrity hashes, SHA-256 `b1ee9065901b18543385e071878bcf5259a4dd0e10cb75cea8c0c2432805102a`.
-- The current branch has follow-up workflow-trigger and Redocly policy changes after `fa43b491`; CQ-00.5 and foundation CI are being rerun on the latest head before CQ00-05 is marked PASS.
 
 ## Status vocabulary
 
