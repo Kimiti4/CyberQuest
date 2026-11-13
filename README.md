@@ -11,7 +11,8 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 - Default branch: `main`
 - CQ-00 status: **IN PROGRESS**
 - CQ-00.4 architecture decisions ADR-0004 and ADR-0005: **FOUNDER-APPROVED**
-- Next checkpoint: **CQ-00.5 — Android and Web Reproducible Build Foundations**
+- Current checkpoint: **CQ-00.5 — Android and Web Reproducible Build Foundations (IN PROGRESS)**
+- Android and web scaffolds are being introduced; clean CI build evidence and the committed npm lockfile are still pending
 - No production application, real device scanning, malware detection or cyber-range execution is claimed.
 
 ## Product principles
