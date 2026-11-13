@@ -8,7 +8,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-02 | Product scope | Approved MVP, exclusions, learner journeys and content boundaries | DRAFT |
 | CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed and founder-ratified | PARTIAL |
 | CQ00-04 | Security and privacy | Threat model, privacy baseline, cyber-safety boundaries | DRAFT |
-| CQ00-05 | Reproducible toolchain | Python 3.12.16, committed transitive hash lock, locked CI install and drift rejection verified; Android/web toolchains not implemented | PARTIAL |
+| CQ00-05 | Reproducible toolchain | Python hash lock plus pinned Android/web toolchains, committed wrapper and npm lock, clean CI builds | PARTIAL |
 | CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
 | CQ00-07 | Automated verification | PostgreSQL-backed CI passed 18 tests on PR merge candidate; broader runtime, Android, web and security verification remain pending | PARTIAL |
 | CQ00-08 | Traceability | Requirements map to implementation and executable verification | DRAFT |
@@ -21,6 +21,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 - CQ-00.4 architecture review: `docs/CQ-00.4-ARCHITECTURE-REVIEW.md`; ADR-0004 and ADR-0005 were ratified by the founder on 2026-11-14. Their decisions are now accepted architecture constraints.
 - CQ-00.4 toolchain assessment: Python backend foundation verified by run 43494824837; Android and web projects/builds were absent at CQ-00.4 close and remain NOT IMPLEMENTED / NOT RUN until CQ-00.5 supplies evidence. Official compatibility references and scaffold acceptance requirements are recorded in `docs/CQ-00.4-TOOLCHAIN-MATRIX.md`.
 - `tests/test_architecture_contract.py` checks selected documented invariants. It is a documentation contract test, not runtime proof of Android/web/API behavior.
+- `tests/test_android_wrapper_integrity.py` verifies the base64-encoded official Gradle wrapper payload and pinned distribution checksum; it does not prove that Gradle itself builds.
 - Draft OpenAPI contract: `openapi/cyberquest-v1.json` (design artefact; not a claim of complete API implementation).
 - API rules: `docs/API-CONTRACT.md`.
 - Conceptual entities and migration policy: `docs/DATA-MODEL.md`.
