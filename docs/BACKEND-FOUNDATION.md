@@ -1,6 +1,6 @@
 # Backend Foundation — CQ-00
 
-**Status: initial API and persistence slice implemented; PostgreSQL migration is now exercised by CI when the workflow passes.**
+**Status: initial API and persistence slice implemented; PostgreSQL migration and identity constraints are exercised in CI.**
 
 ## Included
 
@@ -9,7 +9,8 @@
 - Alembic migration for the two initial tables.
 - PostgreSQL driver dependency and pinned direct requirements files.
 - CI provisions a disposable PostgreSQL 16 service, applies the Alembic migration, inspects the resulting schema, and tests downgrade/re-upgrade.
-- Unit tests for health semantics and model constraints.
+- Unit tests for health semantics and model metadata.
+- PostgreSQL integration tests for duplicate external identity rejection, orphan profile rejection and user/profile cascade deletion.
 
 ## Security and correctness boundaries
 
@@ -22,4 +23,6 @@
 
 ## Dependency verification
 
-The direct dependency pins in `requirements-api.txt` and `requirements-test.txt` are candidate pins. The updated CI installation is the compatibility check; this is not a fully transitive lockfile. A hash-locked dependency solution remains a CQ-00 exit requirement. PostgreSQL runtime verification is only PASS after the new workflow completes successfully; a commit or queued workflow is not evidence.
+The direct dependency pins in `requirements-api.txt` and `requirements-test.txt` are candidate pins. CI verifies their compatibility on Python 3.12; this is not a fully transitive lockfile. A hash-locked dependency solution remains a CQ-00 exit requirement.
+
+PostgreSQL runtime verification is PASS only for a completed workflow on the exact commit containing the integration tests. A commit or queued workflow is not evidence.
