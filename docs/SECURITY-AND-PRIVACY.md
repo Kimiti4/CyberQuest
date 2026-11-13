@@ -1,33 +1,48 @@
 # Security, Privacy and Cyber-Safety Baseline
 
-## Security principles
+**Status: requirements baseline updated in CQ-00.6; controls are not certified or generally implemented.**
 
-- Deny by default; least privilege; server-side object-level authorisation.
-- Strong account recovery and session lifecycle; administrative MFA.
-- Validate inputs at trust boundaries; rate-limit abuse-sensitive operations.
-- Encrypt transport; protect stored data and backups; redact logs.
-- Keep secrets out of source, logs, client bundles and test fixtures.
-- Verify payment callbacks and enforce idempotency before introducing payments.
-- Audit privileged administrative actions and security-relevant events.
-- Scan dependencies and review high-risk changes.
-- Test backup restoration, not merely backup creation.
+## Governing requirements
 
-## Threats to model
+- Deny by default; least privilege; server-side object-level authorization for every learner-owned resource.
+- Validate token issuer, audience, signature, algorithm, expiry and key rotation against an explicitly selected identity provider.
+- Secure account recovery and session lifecycle; MFA for privileged roles.
+- Treat client input, offline events, content imports and AI output as untrusted.
+- Keep assessment, mission completion, XP, mastery, achievements and entitlements server-authoritative.
+- Validate all inputs at trust boundaries; bound payloads, pagination, timeouts and resource use; rate-limit abuse-sensitive operations.
+- Encrypt transport; protect tokens and stored data; redact logs; keep secrets out of source, bundles, CI and fixtures.
+- Audit privileged/security-relevant actions without retaining credentials or unnecessary learner content.
+- Minimize personal data; document purpose, lawful basis, access, retention, deletion/export and processor sharing before collection.
+- Review dependency provenance, vulnerabilities, backup restoration and incident response before release.
+- Future lab launch fails closed unless every isolation and lifecycle control is independently verified.
 
-Account takeover/recovery abuse; broken object-level authorisation; cross-learner data exposure; XP/reward manipulation; mission tampering; malicious content; API abuse/denial of service; replay and duplicate sync; payment callback spoofing; insider misuse; future lab escape or unintended network access.
+## Checkpoint documents
 
-## Privacy
+- [CQ-00.6 threat model and privacy inventory](CQ-00.6-SECURITY-PRIVACY-THREAT-MODEL.md)
+- [CQ-00.6 security verification plan](CQ-00.6-SECURITY-VERIFICATION-PLAN.md)
+- [Risk register](RISK-REGISTER.md)
+- [Operations and recovery baseline](OPERATIONS-AND-RECOVERY.md)
 
-Collect only information needed to operate the product and evaluate learning. Document purpose, lawful basis, retention, deletion, export, access and incident handling before production collection. Avoid collecting contacts, SMS, call logs, precise location, files or unrelated device data for the MVP.
+The threat model covers STRIDE, system assets, actors, trust boundaries, privacy data categories, Kenyan legal review work, child-safety requirements, cyber-safety and future lab containment. It is a design baseline only.
 
-Legal review must cover Kenya's Data Protection Act and applicable regulations, international users, minors, age-appropriate design, consent and cross-border processing before launch. This document is an engineering baseline, not legal advice or a completed compliance assessment.
+## Privacy and legal boundary
 
-## Cyber-safety boundaries
+CYBERQUEST targets Kenya and may later serve international learners. Before live personal-data collection, obtain qualified Kenyan privacy/legal review of the Data Protection Act, 2019; applicable 2021 regulations; ODPC guidance; controller/processor roles; ODPC registration applicability; lawful bases; notices; rights workflows; processor contracts; cross-border transfers; retention and incident obligations.
 
-MVP activities are static lessons and deterministic simulations. No real targets, credential harvesting, malware execution, uncontrolled network scanning or arbitrary command execution.
+No minor-facing service may launch until age scope, age assurance, parent/guardian consent mechanisms where required, best-interests safeguards, child-friendly notices and safeguarding workflows have been reviewed and approved. Do not assume consent is the lawful basis for every processing purpose.
 
-Future technical labs require isolated disposable environments, deny-by-default egress, private-host and cloud-metadata blocking, network policy enforced outside learner control, resource quotas, short-lived credentials, expiry/teardown and audit evidence. Lab launch must fail closed if any required control is absent.
+This baseline is not legal advice, a completed DPIA or a compliance certification.
+
+## MVP cyber-safety boundaries
+
+MVP activities are static lessons and deterministic simulations using fictional data and targets. No live credential collection, malware execution, uncontrolled network scanning, arbitrary commands or learner-controlled code execution.
+
+Do not request contacts, SMS, call logs, precise location, installed-app inventory, files, microphone or camera for MVP learning. Any future device permission requires a documented purpose, least privilege, clear notice and separate approval.
+
+## Future technical labs
+
+Executable labs remain deferred. Any future launch requires disposable isolated environments, immutable approved images, no privileged mode/host mounts/socket, externally enforced default-deny egress, private/loopback/link-local/cloud-metadata blocking, resource quotas, short-lived credentials, expiry, verified teardown, audit, emergency stop and independent escape/network testing.
 
 ## Claims and evidence
 
-A simulated detection is not a real device scan. A lesson is not a security control. A quiz score is not professional certification. Product copy and telemetry must preserve these distinctions.
+A simulated detection is not a real device scan. A lesson is not a security control. A quiz score is not professional certification. No product claim may exceed independently verified functionality.
