@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def test_gradle_wrapper_payload_matches_official_gradle_813_checksum() -> None:
     encoded = (ROOT / "android/gradle/wrapper/gradle-wrapper.jar.base64").read_text()
-    wrapper_bytes = base64.b64decode(encoded, validate=True)
+    wrapper_bytes = base64.b64decode("".join(encoded.split()), validate=True)
     assert sha256(wrapper_bytes).hexdigest() == (
         "81a82aaea5abcc8ff68b3dfcb58b3c3c429378efd98e7433460610fecd7ae45f"
     )
