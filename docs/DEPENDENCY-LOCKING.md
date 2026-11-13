@@ -1,7 +1,7 @@
 # Python Dependency Locking
 
 **Checkpoint:** CQ-00.3  
-**Status:** CI lock-generation and verification workflow implemented; canonical lock not yet committed.
+**Status:** Canonical lock committed as `requirements-lock.txt` and consumed by `foundation-ci`; CI regenerates a temporary lock to reject drift.
 
 ## Source of truth
 
@@ -46,4 +46,4 @@ python -m pip install --require-hashes -r requirements-lock.txt
 - Android and web toolchains are outside this checkpoint.
 - Hash locking verifies downloaded distribution artifacts against recorded hashes; it does not by itself establish publisher trust, provenance, vulnerability status or a hermetic build.
 
-CQ00-05 remains PARTIAL until a successful run is inspected, the generated lock is reviewed and committed, and CI is changed to consume that committed lock rather than regenerate it on every run.
+CQ00-05 is satisfied for the Python backend toolchain once CI consumes the committed lock, rejects drift, and the PostgreSQL-backed test suite passes on the candidate commit. Android and web toolchains remain outside this checkpoint.
