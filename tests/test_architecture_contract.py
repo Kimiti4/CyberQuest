@@ -8,7 +8,7 @@ def test_cross_platform_architecture_preserves_server_authority() -> None:
     review = (ROOT / "docs/CQ-00.4-ARCHITECTURE-REVIEW.md").read_text(encoding="utf-8").lower()
     assert "server" in architecture and "authoritative" in architecture
     assert "offline" in architecture and "untrusted" in architecture
-    assert "backend remains authoritative" in review
+    assert "backend owns authoritative learning" in review
     assert "client-submitted score" in review or "client-supplied xp" in review
 
 
@@ -16,8 +16,9 @@ def test_all_four_pillars_share_one_platform_baseline() -> None:
     review = (ROOT / "docs/CQ-00.4-ARCHITECTURE-REVIEW.md").read_text(encoding="utf-8").lower()
     for pillar in ("cyber academy", "cyber defense", "cyber labs", "cyber arena"):
         assert pillar in review
-    assert "one product" in review
-    assert "modular monolith" in review
+    adr = (ROOT / "docs/DECISIONS/ADR-0004-UNIFIED-PLATFORM-BOUNDARIES.md").read_text(encoding="utf-8").lower()
+    assert "one product" in adr
+    assert "modular monolith" in adr
 
 
 def test_executable_labs_remain_deferred_pending_isolation_evidence() -> None:
