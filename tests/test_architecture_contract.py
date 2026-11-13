@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_cross_platform_architecture_preserves_server_authority() -> None:
     architecture = (ROOT / "docs/ARCHITECTURE.md").read_text(encoding="utf-8").lower()
     review = (ROOT / "docs/CQ-00.4-ARCHITECTURE-REVIEW.md").read_text(encoding="utf-8").lower()
-    assert "server" in architecture and "authoritative" in architecture
+    assert "backend" in architecture and "authoritative" in architecture
     assert "offline" in architecture and "untrusted" in architecture
     assert "backend owns authoritative learning" in review
     assert "client-submitted score" in review or "client-supplied xp" in review
