@@ -29,3 +29,13 @@ test("mission event contract does not accept client reward authority", () => {
   assert.ok(!("xp" in schema.properties));
   assert.ok(!("mastery" in schema.properties));
 });
+
+test("health probes are explicitly public", () => {
+  assert.deepEqual(contract.paths["/health/live"].get.security, []);
+  assert.deepEqual(contract.paths["/health/ready"].get.security, []);
+});
+
+test("OpenAPI tags are documented and no production endpoint is implied", () => {
+  assert.ok(contract.tags.every((tag) => tag.description?.trim()));
+  assert.ok(contract.servers.every((server) => server.url.startsWith("http://localhost:")));
+});
