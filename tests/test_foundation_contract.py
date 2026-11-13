@@ -26,8 +26,8 @@ def test_foundation_does_not_claim_application_is_complete() -> None:
     assert "No production application" in readme
 
 
-def test_acceptance_register_has_unverified_gates() -> None:
+def test_acceptance_register_preserves_unverified_states() -> None:
     acceptance = (ROOT / "docs/CQ-00-ACCEPTANCE.md").read_text(encoding="utf-8")
-    assert "NOT RUN" in acceptance
-    assert "NOT STARTED" in acceptance
-    assert "PASS requires" not in acceptance or "PASS requires" in acceptance
+    assert "| NOT RUN |" in acceptance
+    assert "| NOT STARTED |" in acceptance
+    assert "CQ-01 remains blocked" in acceptance
