@@ -1,7 +1,7 @@
 # Python Dependency Locking
 
 **Checkpoint:** CQ-00.3  
-**Status:** bootstrap verification in progress; canonical lock not yet committed.
+**Status:** CI lock-generation and verification workflow implemented; canonical lock not yet committed.
 
 ## Source of truth
 
@@ -9,7 +9,7 @@
 
 ## Resolution procedure
 
-The CI workflow pins `pip-tools==7.6.2` and resolves all declared extras on Python 3.12.16:
+The main `foundation-ci` workflow pins Python 3.12.16 and `pip-tools==7.6.2`, resolves all declared extras, and installs from the generated hash-locked resolution before migration and test execution:
 
 ```sh
 python -m piptools compile \
@@ -40,10 +40,10 @@ python -m pip install --require-hashes -r requirements-lock.txt
 
 ## Scope and limitations
 
-- The bootstrap compiler is version-pinned but its own installation is not yet hash-locked.
+- The lock compiler is version-pinned but its own installation is not yet hash-locked.
 - GitHub-hosted runner images and the PostgreSQL service image are not yet pinned by immutable image digest.
 - Python 3.12.16 is pinned for this lock-generation workflow; broader Python-version support is not claimed.
 - Android and web toolchains are outside this checkpoint.
 - Hash locking verifies downloaded distribution artifacts against recorded hashes; it does not by itself establish publisher trust, provenance, vulnerability status or a hermetic build.
 
-CQ00-05 remains PARTIAL until the canonical lock is committed and consumed by CI.
+CQ00-05 remains PARTIAL until a successful run is inspected, the generated lock is reviewed and committed, and CI is changed to consume that committed lock rather than regenerate it on every run.
