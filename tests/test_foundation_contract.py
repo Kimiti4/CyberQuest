@@ -48,7 +48,7 @@ def test_mutating_mission_operations_require_idempotency_and_authentication() ->
     for path in ["/v1/mission-attempts", "/v1/mission-attempts/{attemptId}/events"]:
         endpoint = contract["paths"][path]["post"]
         assert endpoint["security"] == [{"BearerAuth": []}]
-        assert any(p["name"] == "Idempotency-Key" and p["required"] for p in endpoint["parameters"]]
+        assert any(p["name"] == "Idempotency-Key" and p["required"] for p in endpoint["parameters"])
 
 
 def test_mission_event_receipt_does_not_claim_completion() -> None:
