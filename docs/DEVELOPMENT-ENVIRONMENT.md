@@ -1,6 +1,6 @@
 # Development Environment Baseline
 
-**Status: backend foundation verified; Android/Linux, Windows wrapper and web build foundations passed CI on candidate fa43; latest head revalidation pending.**
+**Status: backend foundation, Android/Linux build, Windows wrapper smoke and web build foundations verified in CI on candidate `0b1c2d5642dd5b8641f519c586b6a8f60bbc9b61`.**
 
 ## Verified backend CI environment
 
@@ -22,9 +22,9 @@ Current Android pins are JDK 17.0.17+10, AGP 8.11.1, Kotlin/Compose compiler 2.2
 
 ## Web environment
 
-Candidate stack: Next.js 16, TypeScript, Node.js LTS and one package manager. Next.js 16 is listed as Active LTS and official installation documentation specifies Node.js 20.9 minimum. CQ-00.5 pins Node 24.22.3, npm 11.19.1, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. `web/package-lock.json` is committed (308 package entries; 307 resolved packages with integrity hashes). CI runs `npm ci`, TypeScript typecheck, Node contract tests, Redocly lint and Next.js production build.
+Candidate stack: Next.js 16, TypeScript, Node.js LTS and npm. CQ-00.5 pins Node 24.22.3, npm 11.19.1, Next.js 16.4.0, React 19.3.0 and TypeScript 5.9.3. `web/package-lock.json` is committed (308 package entries; 307 resolved packages with integrity hashes). CI runs `npm ci`, TypeScript typecheck, five Node contract tests, warning-free Redocly lint and Next.js production build.
 
-Commit the selected package manager's lockfile and use immutable installation (`npm ci` if npm is selected). CI must run lint, typecheck, unit tests and production build; add browser smoke tests before integration claims.
+Browser smoke tests remain required before claiming cross-client integration.
 
 ## Local Python setup
 
@@ -45,10 +45,9 @@ Commit the selected package manager's lockfile and use immutable installation (`
 
 - Hash-lock the bootstrap lock compiler and assess artifact provenance.
 - Pin immutable runner/container images where operationally justified.
-- Review Linux Android clean-build and Windows wrapper smoke CI results; emulator-backed smoke verification remains deferred.
-- Commit the generated npm lock artifact and rerun the web job using npm ci from the committed lock.
-- Contract-test OpenAPI and client compatibility.
+- Add emulator/instrumentation smoke tests.
+- Contract-test OpenAPI against a live backend and validate Android/web API compatibility.
 - Select production identity/session design and provider only after threat-model review.
 - Execute backup restore and document provider cost/data-residency decisions.
 
-CQ-00.5 build foundations passed on candidate fa43. Latest branch revalidation is pending; emulator/instrumentation, API/client integration and production readiness remain unverified.
+CQ-00.5 build foundations PASS on candidate `0b1c2d5642dd5b8641f519c586b6a8f60bbc9b61`. Emulator/instrumentation, API/client integration and production readiness remain unverified.
