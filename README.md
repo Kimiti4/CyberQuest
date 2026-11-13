@@ -10,7 +10,8 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 - Repository: [Kimiti4/CyberQuest](https://github.com/Kimiti4/CyberQuest)
 - Default branch: `main`
 - CQ-00 status: **IN PROGRESS**
-- Current architecture review: **CQ-00.4 — PARTIAL; founder decisions and Android/web build evidence pending**
+- CQ-00.4 architecture decisions ADR-0004 and ADR-0005: **FOUNDER-APPROVED**
+- Next checkpoint: **CQ-00.5 — Android and Web Reproducible Build Foundations**
 - No production application, real device scanning, malware detection or cyber-range execution is claimed.
 
 ## Product principles
@@ -33,7 +34,7 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 | Tests | Pytest, JUnit/Compose UI Test, Vitest, Playwright |
 | CI | GitHub Actions |
 
-These are proposed choices until their compatibility and operational fit are verified in CQ-00. Exact runtime/tool versions must be pinned before application implementation.
+These choices are approved architecture direction; exact runtime/tool versions must be pinned after compatibility checks and actual build verification.
 
 ## Documentation
 
