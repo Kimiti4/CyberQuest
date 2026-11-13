@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools==75.8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cyberquest"
+version = "0.1.0"
+description = "CyberQuest platform foundation"
+requires-python = ">=3.12,<3.14"
+dependencies = []
+
+[project.optional-dependencies]
+api = [
+  "fastapi==0.128.2",
+  "pydantic==2.13.5",
+  "sqlalchemy==2.0.50",
+  "alembic==1.18.4",
+  "uvicorn[standard]==0.40.0",
+]
+test = [
+  "pytest==9.0.5",
+  "httpx==0.28.1",
+]
+dev = [
+  "ruff==0.14.14",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
