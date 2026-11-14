@@ -15,6 +15,7 @@ def test_demo_mission_is_fictional_and_versioned() -> None:
     assert ".example" in mission["email"]["from_address"]
     assert "fictional training simulation" in mission["simulation_notice"].lower()
     assert "correct_indicator_ids" not in mission
+    assert len(mission["indicators"]) == 8
 
 
 def test_server_scores_submission_and_never_awards_xp_or_mastery() -> None:
@@ -86,7 +87,7 @@ def test_submission_bounds_are_enforced() -> None:
     response = client.post(
         "/v1/demo/missions/phishing-detective/assessment",
         json={
-            "selected_indicator_ids": ["a", "b", "c", "d", "e", "f"],
+            "selected_indicator_ids": ["a", "b", "c", "d", "e", "f", "g", "h", "i"],
             "response_id": "verify_and_report",
         },
     )
@@ -100,3 +101,22 @@ def test_unknown_response_is_rejected() -> None:
     )
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == "unknown_response"
+
+
+def test_neutral_facts_are_not_scored_as_warning_indicators() -> None:
+    response = client.post(
+        "/v1/demo/missions/phishing-detective/assessment",
+        json={
+            "selected_indicator_ids": [
+                "sender_domain", "reply_to_mismatch", "urgency_pressure",
+                "unexpected_invoice", "unverified_link", "invoice_reference",
+                "team_greeting", "business_hours",
+            ],
+            "response_id": "verify_and_report",
+        },
+    )
+    result = response.json()
+    assert result["score"] == 7
+    assert result["incorrect_selections"] == [
+        "business_hours", "invoice_reference", "team_greeting"
+    ]

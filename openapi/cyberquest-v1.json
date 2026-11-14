@@ -775,7 +775,7 @@
         "properties": {
           "selected_indicator_ids": {
             "type": "array",
-            "maxItems": 5,
+            "maxItems": 8,
             "uniqueItems": true,
             "items": {
               "type": "string",

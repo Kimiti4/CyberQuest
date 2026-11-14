@@ -25,17 +25,64 @@
     "attachment_label": "No attachment is provided in this simulation."
   },
   "indicators": [
-    {"id":"sender_domain","label":"The sender domain does not match an independently verified company domain.","category":"sender"},
-    {"id":"reply_to_mismatch","label":"The reply-to address uses a different external domain.","category":"sender"},
-    {"id":"urgency_pressure","label":"The message pressures the recipient to act within two hours.","category":"language"},
-    {"id":"unexpected_invoice","label":"The invoice is unexpected and should be verified independently.","category":"context"},
-    {"id":"unverified_link","label":"The displayed invoice link uses an unverified domain.","category":"link"}
+    {
+      "id": "sender_domain",
+      "label": "The sender domain is not independently verified as belonging to Nexus Corporation.",
+      "category": "sender"
+    },
+    {
+      "id": "reply_to_mismatch",
+      "label": "The reply-to address uses a different external domain.",
+      "category": "sender"
+    },
+    {
+      "id": "urgency_pressure",
+      "label": "The message pressures the recipient to act within two hours.",
+      "category": "language"
+    },
+    {
+      "id": "unexpected_invoice",
+      "label": "The invoice is unexpected and should be verified independently.",
+      "category": "context"
+    },
+    {
+      "id": "unverified_link",
+      "label": "The displayed invoice link uses an unverified domain.",
+      "category": "link"
+    },
+    {
+      "id": "invoice_reference",
+      "label": "The message contains a specific invoice reference number. This fact alone is not suspicious.",
+      "category": "context"
+    },
+    {
+      "id": "team_greeting",
+      "label": "The message is addressed to the Finance Team. A team greeting alone is not suspicious.",
+      "category": "context"
+    },
+    {
+      "id": "business_hours",
+      "label": "The message arrived at 09:14. The time alone is not suspicious.",
+      "category": "context"
+    }
   ],
   "response_options": [
-    {"id":"click_and_pay","label":"Open the link and pay immediately to avoid suspension."},
-    {"id":"reply_for_confirmation","label":"Reply to the email and ask whether the invoice is genuine."},
-    {"id":"verify_and_report","label":"Do not interact with the message. Verify through a known official channel and report it using the organisation's approved process."},
-    {"id":"forward_to_colleague","label":"Forward the message to a colleague and ask them to open the link."}
+    {
+      "id": "click_and_pay",
+      "label": "Open the link and pay immediately to avoid suspension."
+    },
+    {
+      "id": "reply_for_confirmation",
+      "label": "Reply to the email and ask whether the invoice is genuine."
+    },
+    {
+      "id": "verify_and_report",
+      "label": "Do not interact with the message. Verify through a known official channel and report it using the organisation's approved process."
+    },
+    {
+      "id": "forward_to_colleague",
+      "label": "Forward the message to a colleague and ask them to open the link."
+    }
   ],
   "learning_objectives": [
     "Recognise sender and reply-to domain inconsistencies.",

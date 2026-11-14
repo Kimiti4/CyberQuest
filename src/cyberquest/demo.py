@@ -18,6 +18,9 @@ CORRECT_INDICATORS = frozenset({
     "sender_domain", "reply_to_mismatch", "urgency_pressure",
     "unexpected_invoice", "unverified_link",
 })
+ALL_INDICATOR_IDS = CORRECT_INDICATORS | frozenset({
+    "invoice_reference", "team_greeting", "business_hours",
+})
 SAFE_RESPONSE = "verify_and_report"
 
 
@@ -65,7 +68,7 @@ class MissionContent(BaseModel):
 
 class AssessmentSubmission(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    selected_indicator_ids: list[str] = Field(max_length=5)
+    selected_indicator_ids: list[str] = Field(max_length=8)
     response_id: str = Field(min_length=1, max_length=64)
 
     @model_validator(mode="after")
@@ -82,7 +85,7 @@ def load_mission() -> MissionContent:
     except (OSError, json.JSONDecodeError, ValueError) as exc:
         # A broken or missing mission must never be served as a successful demo.
         raise RuntimeError("Phishing Detective mission content is invalid") from exc
-    if {item.id for item in mission.indicators} != CORRECT_INDICATORS:
+    if {item.id for item in mission.indicators} != ALL_INDICATOR_IDS:
         raise RuntimeError("Mission indicator catalogue does not match its assessment rubric")
     if SAFE_RESPONSE not in {item.id for item in mission.response_options}:
         raise RuntimeError("Mission response catalogue does not match its assessment rubric")
