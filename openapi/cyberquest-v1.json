@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "CYBERQUEST API",
-    "version": "1.0.0",
-    "description": "Proposed contract only. No runtime implementation is implied."
+    "version": "1.1.0",
+    "description": "Proposed contract includes the stateless synthetic demo. Demo routes are unauthenticated and intended only for local/development use."
   },
   "tags": [
     {
@@ -21,6 +21,10 @@
     {
       "name": "Learner progress",
       "description": "Server-authoritative learner progress, XP and competency summaries."
+    },
+    {
+      "name": "Demo missions",
+      "description": "Stateless fictional training demo only; no accounts, learner data, persistence, XP or mastery."
     }
   ],
   "paths": {
@@ -448,6 +452,63 @@
           }
         }
       }
+    },
+    "/v1/demo/missions/phishing-detective": {
+      "get": {
+        "tags": [
+          "Demo missions"
+        ],
+        "summary": "Get the fictional Phishing Detective mission",
+        "operationId": "getDemoPhishingDetective",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Versioned fictional mission content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoMission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/missions/phishing-detective/assessment": {
+      "post": {
+        "tags": [
+          "Demo missions"
+        ],
+        "summary": "Evaluate a synthetic Phishing Detective submission",
+        "operationId": "assessDemoPhishingDetective",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoAssessmentSubmission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deterministic practice feedback; no XP, mastery or persistence",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoAssessmentResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid submission"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -701,6 +762,161 @@
           "competency_count": {
             "type": "integer",
             "minimum": 0
+          }
+        }
+      },
+      "DemoAssessmentSubmission": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "selected_indicator_ids",
+          "response_id"
+        ],
+        "properties": {
+          "selected_indicator_ids": {
+            "type": "array",
+            "maxItems": 5,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          "response_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        }
+      },
+      "DemoMission": {
+        "type": "object",
+        "description": "Public scenario content; does not expose scoring rubric.",
+        "required": [
+          "schema_version",
+          "mission_id",
+          "version",
+          "title",
+          "organisation",
+          "simulation_notice",
+          "briefing",
+          "email",
+          "indicators",
+          "response_options",
+          "learning_objectives"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "const": 1
+          },
+          "mission_id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "organisation": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced"
+            ]
+          },
+          "estimated_minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "simulation_notice": {
+            "type": "string"
+          },
+          "briefing": {
+            "type": "string"
+          },
+          "email": {
+            "type": "object",
+            "additionalProperties": false
+          },
+          "indicators": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "response_options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false
+            }
+          },
+          "learning_objectives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DemoAssessmentResult": {
+        "type": "object",
+        "required": [
+          "mission_id",
+          "mission_version",
+          "score",
+          "max_score",
+          "xp_awarded",
+          "competency_awarded",
+          "persistence",
+          "learning_status",
+          "feedback"
+        ],
+        "properties": {
+          "mission_id": {
+            "type": "string"
+          },
+          "mission_version": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "max_score": {
+            "type": "integer",
+            "const": 10
+          },
+          "xp_awarded": {
+            "type": "integer",
+            "const": 0
+          },
+          "competency_awarded": {
+            "type": "boolean",
+            "const": false
+          },
+          "persistence": {
+            "type": "string",
+            "const": "not_saved"
+          },
+          "learning_status": {
+            "type": "string",
+            "const": "practice_feedback_only"
+          },
+          "feedback": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
           }
         }
       }
