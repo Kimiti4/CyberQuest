@@ -84,6 +84,7 @@ invalid_status, invalid = post_json(
     {"selected_indicator_ids": [], "response_id": "verify_and_report", "xp": 999999},
 )
 assert invalid_status == 422
-assert invalid["detail"]["code"] == "unknown_response" or "detail" in invalid
+assert isinstance(invalid.get("detail"), list)
+assert invalid["detail"][0]["type"] == "extra_forbidden"
 
 print("CQ-00.7 FastAPI -> Next.js demo integration: PASS")
