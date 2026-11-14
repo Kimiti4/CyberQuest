@@ -4,7 +4,7 @@
 
 ## Product
 
-CYBERQUEST combines beginner-friendly digital safety, professional cybersecurity education, story-driven missions and measurable practical competence. Launch direction is Android first with a companion responsive web experience. Initial audience: Kenyan and international English-speaking beginners, students and early-career professionals.
+CYBERQUEST combines beginner-friendly digital safety, professional cybersecurity education, story-driven missions and measurable practical competence. Launch direction is Android first with a companion responsive web experience. Initial audience: adults aged 18 and above; Kenyan and international English-speaking beginners, students and early-career professionals. The initial release is adults-only; minors are out of scope.
 
 ## Learning loop
 
