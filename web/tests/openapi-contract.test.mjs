@@ -64,3 +64,11 @@ test("demo mission and assessment schemas describe the actual API payloads", () 
   }
   assert.equal(result.properties.persistence.const, "not_saved");
 });
+
+
+test("demo feedback distinguishes warning signs, selections and neutral facts", () => {
+  const feedback = contract.components.schemas.DemoAssessmentResult.properties.feedback.items;
+  for (const field of ["is_warning_sign", "selected", "identified"]) {
+    assert.ok(feedback.properties[field], field);
+  }
+});

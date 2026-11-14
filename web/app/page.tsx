@@ -22,7 +22,7 @@ type Mission = {
 type Assessment = {
   score: number; max_score: number; missed_indicators: string[];
   incorrect_selections: string[]; response_correct: boolean; response_explanation: string;
-  feedback: { indicator_id: string; identified: boolean; explanation: string }[];
+  feedback: { indicator_id: string; is_warning_sign: boolean; selected: boolean; identified: boolean; explanation: string }[];
   xp_awarded: number; competency_awarded: boolean; persistence: string; simulation_notice: string;
 };
 
@@ -112,7 +112,10 @@ export default function HomePage() {
         <div className="score"><strong>{result.score}</strong><span>/ {result.max_score} points</span></div>
         <p>{result.response_explanation}</p>
         <h3>Indicator feedback</h3>
-        <ul className="feedback">{result.feedback.map((item) => <li key={item.indicator_id}><span>{item.identified ? "Identified" : "Missed"}</span>{item.explanation}</li>)}</ul>
+        <ul className="feedback">{result.feedback.map((item) => {
+          const status = item.is_warning_sign ? (item.identified ? "Identified" : "Missed") : (item.selected ? "False positive" : "Neutral fact");
+          return <li key={item.indicator_id}><span>{status}</span>{item.explanation}</li>;
+        })}</ul>
         {result.incorrect_selections.length > 0 && <p className="muted">Review the indicators you selected that were not supported by the scenario.</p>}
         <p className="notice">{result.simulation_notice}</p>
         <p className="muted">XP awarded: {result.xp_awarded} · Competency awarded: {result.competency_awarded ? "Yes" : "No"} · Saved: {result.persistence === "not_saved" ? "No" : result.persistence}</p>

@@ -120,3 +120,19 @@ def test_neutral_facts_are_not_scored_as_warning_indicators() -> None:
     assert result["incorrect_selections"] == [
         "business_hours", "invoice_reference", "team_greeting"
     ]
+
+
+def test_feedback_distinguishes_neutral_facts_from_missed_warning_signs() -> None:
+    response = client.post(
+        "/v1/demo/missions/phishing-detective/assessment",
+        json={
+            "selected_indicator_ids": ["invoice_reference"],
+            "response_id": "verify_and_report",
+        },
+    )
+    feedback = {item["indicator_id"]: item for item in response.json()["feedback"]}
+    assert feedback["invoice_reference"]["is_warning_sign"] is False
+    assert feedback["invoice_reference"]["selected"] is True
+    assert feedback["invoice_reference"]["identified"] is False
+    assert feedback["sender_domain"]["is_warning_sign"] is True
+    assert feedback["sender_domain"]["selected"] is False

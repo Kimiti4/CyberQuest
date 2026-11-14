@@ -50,7 +50,9 @@ private data class DemoMission(
     val options: List<DemoOption>,
 )
 
-private data class DemoFeedback(val label: String, val identified: Boolean)
+private data class DemoFeedback(
+    val label: String, val isWarningSign: Boolean, val selected: Boolean, val identified: Boolean,
+)
 private data class DemoResult(
     val score: Int,
     val maxScore: Int,
@@ -140,7 +142,10 @@ private object DemoApi {
         missedIndicators = json.getJSONArray("missed_indicators").toStringList(),
         incorrectSelections = json.getJSONArray("incorrect_selections").toStringList(),
         feedback = json.getJSONArray("feedback").toObjectList {
-            DemoFeedback(it.getString("explanation"), it.getBoolean("identified"))
+            DemoFeedback(
+                it.getString("explanation"), it.getBoolean("is_warning_sign"),
+                it.getBoolean("selected"), it.getBoolean("identified"),
+            )
         },
     )
 
@@ -262,7 +267,13 @@ private fun CyberQuestApp() {
                             Text(result.value!!.responseExplanation)
                             Text("Indicator feedback", style = MaterialTheme.typography.titleMedium)
                             result.value!!.feedback.forEach { item ->
-                                Text("${if (item.identified) "Identified" else "Missed"} · ${item.label}")
+                                val status = when {
+                                    item.isWarningSign && item.identified -> "Identified"
+                                    item.isWarningSign -> "Missed"
+                                    item.selected -> "False positive"
+                                    else -> "Neutral fact"
+                                }
+                                Text("$status · ${item.label}")
                             }
                             if (result.value!!.incorrectSelections.isNotEmpty()) {
                                 Text("Incorrect selections: ${result.value!!.incorrectSelections.joinToString()}")

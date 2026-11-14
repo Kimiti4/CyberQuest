@@ -115,6 +115,8 @@ def evaluate_submission(submission: AssessmentSubmission) -> dict:
     explanations = [
         {
             "indicator_id": indicator.id,
+            "is_warning_sign": indicator.id in CORRECT_INDICATORS,
+            "selected": indicator.id in set(submission.selected_indicator_ids),
             "identified": indicator.id in correct_selected,
             "explanation": indicator.label,
         }

@@ -1016,12 +1016,20 @@
               "additionalProperties": false,
               "required": [
                 "indicator_id",
+                "is_warning_sign",
+                "selected",
                 "identified",
                 "explanation"
               ],
               "properties": {
                 "indicator_id": {
                   "type": "string"
+                },
+                "is_warning_sign": {
+                  "type": "boolean"
+                },
+                "selected": {
+                  "type": "boolean"
                 },
                 "identified": {
                   "type": "boolean"
