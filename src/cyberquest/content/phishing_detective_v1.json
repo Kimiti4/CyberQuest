@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "mission_id": "phishing-detective-suspicious-invoice",
+  "version": 1,
+  "title": "Phishing Detective: Suspicious Invoice",
+  "organisation": "Nexus Corporation",
+  "difficulty": "beginner",
+  "estimated_minutes": 8,
+  "simulation_notice": "This is a fictional training simulation. No message, sender, link or organisation shown here is real.",
+  "briefing": "You are helping the Nexus Corporation finance team review an unexpected invoice notification. Examine the message and identify the warning signs before choosing a safe response.",
+  "email": {
+    "display_name": "Nexus Corporation Accounts",
+    "from_address": "billing@nexus-corp-payments.example",
+    "reply_to": "urgent-resolution@external-mail.example",
+    "subject": "FINAL NOTICE: Invoice NC-2048 requires immediate payment",
+    "received_label": "Today, 09:14 (simulated)",
+    "body": [
+      "Hello Finance Team,",
+      "Our records show invoice NC-2048 is overdue. Payment must be completed within two hours to avoid service suspension.",
+      "Review the invoice using the address below. If you have questions, reply directly to this message.",
+      "Regards,",
+      "Nexus Corporation Accounts"
+    ],
+    "displayed_link": "https://nexus-invoice-review.example/NC-2048",
+    "attachment_label": "No attachment is provided in this simulation."
+  },
+  "indicators": [
+    {
+      "id": "sender_domain",
+      "label": "The sender domain is not independently verified as belonging to Nexus Corporation.",
+      "category": "sender"
+    },
+    {
+      "id": "reply_to_mismatch",
+      "label": "The reply-to address uses a different external domain.",
+      "category": "sender"
+    },
+    {
+      "id": "urgency_pressure",
+      "label": "The message pressures the recipient to act within two hours.",
+      "category": "language"
+    },
+    {
+      "id": "unexpected_invoice",
+      "label": "The invoice is unexpected and should be verified independently.",
+      "category": "context"
+    },
+    {
+      "id": "unverified_link",
+      "label": "The displayed invoice link uses an unverified domain.",
+      "category": "link"
+    },
+    {
+      "id": "invoice_reference",
+      "label": "The message contains a specific invoice reference number. This fact alone is not suspicious.",
+      "category": "context"
+    },
+    {
+      "id": "team_greeting",
+      "label": "The message is addressed to the Finance Team. A team greeting alone is not suspicious.",
+      "category": "context"
+    },
+    {
+      "id": "business_hours",
+      "label": "The message arrived at 09:14. The time alone is not suspicious.",
+      "category": "context"
+    }
+  ],
+  "response_options": [
+    {
+      "id": "click_and_pay",
+      "label": "Open the link and pay immediately to avoid suspension."
+    },
+    {
+      "id": "reply_for_confirmation",
+      "label": "Reply to the email and ask whether the invoice is genuine."
+    },
+    {
+      "id": "verify_and_report",
+      "label": "Do not interact with the message. Verify through a known official channel and report it using the organisation's approved process."
+    },
+    {
+      "id": "forward_to_colleague",
+      "label": "Forward the message to a colleague and ask them to open the link."
+    }
+  ],
+  "learning_objectives": [
+    "Recognise sender and reply-to domain inconsistencies.",
+    "Identify urgency and unexpected-payment pressure.",
+    "Treat unverified links as untrusted.",
+    "Choose an independent verification and reporting response."
+  ]
+}

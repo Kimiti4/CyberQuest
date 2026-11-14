@@ -14,7 +14,7 @@ test("OpenAPI contract declares health and learning entry points", () => {
 
 test("learner endpoints require bearer authentication", () => {
   for (const [path, item] of Object.entries(contract.paths)) {
-    if (path.startsWith("/v1/")) {
+    if (path.startsWith("/v1/") && !path.startsWith("/v1/demo/")) {
       for (const operation of Object.values(item)) {
         assert.ok(operation.security?.some((scheme) => "BearerAuth" in scheme), path);
       }
@@ -38,4 +38,37 @@ test("health probes are explicitly public", () => {
 test("OpenAPI tags are documented and no production endpoint is implied", () => {
   assert.ok(contract.tags.every((tag) => tag.description?.trim()));
   assert.ok(!contract.servers || contract.servers.length === 0);
+});
+
+test("stateless demo routes are explicitly unauthenticated and non-authoritative", () => {
+  const mission = contract.paths["/v1/demo/missions/phishing-detective"].get;
+  const assessment = contract.paths["/v1/demo/missions/phishing-detective/assessment"].post;
+  assert.deepEqual(mission.security, []);
+  assert.deepEqual(assessment.security, []);
+  const submission = contract.components.schemas.DemoAssessmentSubmission;
+  assert.equal(submission.additionalProperties, false);
+  assert.ok(!("xp" in submission.properties));
+  assert.equal(contract.components.schemas.DemoAssessmentResult.properties.xp_awarded.const, 0);
+});
+
+
+test("demo mission and assessment schemas describe the actual API payloads", () => {
+  const mission = contract.components.schemas.DemoMission;
+  assert.ok(mission.properties.email.properties.from_address);
+  assert.ok(mission.properties.email.properties.reply_to);
+  assert.ok(mission.properties.indicators.items.properties.id);
+  assert.ok(mission.properties.response_options.items.properties.id);
+  const result = contract.components.schemas.DemoAssessmentResult;
+  for (const field of ["missed_indicators", "incorrect_selections", "response_correct", "response_explanation"]) {
+    assert.ok(result.properties[field], field);
+  }
+  assert.equal(result.properties.persistence.const, "not_saved");
+});
+
+
+test("demo feedback distinguishes warning signs, selections and neutral facts", () => {
+  const feedback = contract.components.schemas.DemoAssessmentResult.properties.feedback.items;
+  for (const field of ["is_warning_sign", "selected", "identified"]) {
+    assert.ok(feedback.properties[field], field);
+  }
 });

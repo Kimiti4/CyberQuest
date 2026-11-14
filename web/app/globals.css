@@ -1,46 +1,45 @@
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  min-height: 100%;
-  margin: 0;
-}
-
-body {
-  background: #0b1220;
-  color: #f3f6fb;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.page {
-  display: grid;
-  min-height: 100vh;
-  align-content: center;
-  justify-items: start;
-  gap: 1rem;
-  max-width: 52rem;
-  margin: 0 auto;
-  padding: 3rem 1.5rem;
-}
-
-.eyebrow {
-  color: #8da9d5;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
-
-h1 {
-  max-width: 12ch;
-  margin: 0;
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  line-height: 1.02;
-}
-
-p {
-  max-width: 42rem;
-  color: #c5cfdf;
-  line-height: 1.7;
-}
+* { box-sizing: border-box; }
+:root { color-scheme: dark; }
+html, body { min-height: 100%; margin: 0; }
+body { background: #080f1d; color: #eef3fb; font-family: Arial, Helvetica, sans-serif; }
+button, input { font: inherit; }
+.shell { width: min(100% - 2rem, 900px); margin: 0 auto; padding: 1.5rem 0 3rem; }
+.topbar, .section-heading, footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.brand { font-weight: 900; letter-spacing: .14em; }
+.pill { border: 1px solid #35506f; border-radius: 999px; color: #a9c5e8; padding: .45rem .75rem; font-size: .72rem; letter-spacing: .08em; }
+.hero { padding: 4rem 0 2rem; }
+.eyebrow { color: #80b8f4; font-size: .72rem; font-weight: 800; letter-spacing: .16em; }
+h1 { max-width: 13ch; margin: .7rem 0; font-size: clamp(2.7rem, 8vw, 5.2rem); line-height: .98; }
+h2 { margin: .4rem 0 1rem; font-size: clamp(1.35rem, 4vw, 2rem); }
+h3 { margin: 1.3rem 0 .6rem; }
+p { line-height: 1.65; color: #c7d3e3; }
+.lead { max-width: 44rem; font-size: 1.1rem; }
+.notice { border-left: 3px solid #e6b85c; background: #282315; padding: .85rem 1rem; color: #f3d99e; }
+.panel { margin: 1rem 0; padding: clamp(1.2rem, 4vw, 2rem); border: 1px solid #263b55; border-radius: 18px; background: #101c2e; }
+.email { margin-top: 1.5rem; padding: 1.3rem; border-radius: 12px; background: #f7f9fc; color: #17263a; }
+.email p, .email h3, .email dd { color: #17263a; }
+.email-top { display: flex; justify-content: space-between; gap: .5rem; color: #52647b; font-size: .72rem; font-weight: 800; }
+.email h3 { font-size: 1.2rem; }
+.mail-meta { display: grid; gap: .45rem; border-block: 1px solid #dbe2eb; padding: .8rem 0; }
+.mail-meta div { display: grid; grid-template-columns: 5rem 1fr; gap: .5rem; }
+.mail-meta dt { color: #52647b; font-size: .85rem; }
+.mail-meta dd { margin: 0; overflow-wrap: anywhere; }
+.inert-link { display: grid; gap: .4rem; padding: .8rem; background: #e9eef5; border-radius: 8px; color: #43546a; }
+.inert-link code { overflow-wrap: anywhere; color: #174c84; }
+.muted { color: #9eafc5; font-size: .92rem; }
+.choice-list { display: grid; gap: .7rem; margin: 1rem 0; }
+.choice { display: flex; align-items: flex-start; gap: .8rem; padding: 1rem; border: 1px solid #344b68; border-radius: 10px; cursor: pointer; line-height: 1.5; }
+.choice:has(input:checked) { border-color: #6eafea; background: #142b43; }
+.choice input { margin-top: .25rem; accent-color: #63a8e9; }
+.primary, .secondary { border: 0; border-radius: 10px; padding: .9rem 1.2rem; font-weight: 800; cursor: pointer; }
+.primary { background: #6db2f0; color: #08182a; }
+.primary:disabled { opacity: .45; cursor: not-allowed; }
+.secondary { background: #253c57; color: #e9f2fc; }
+.error { color: #ffaaa5; }
+.score { display: flex; align-items: baseline; gap: .6rem; margin: 1rem 0; }
+.score strong { font-size: 4rem; }
+.score span { color: #a9bdd5; }
+.feedback { display: grid; gap: .65rem; padding-left: 1.2rem; color: #d2dceb; line-height: 1.5; }
+.feedback span { display: inline-block; min-width: 5.2rem; margin-right: .5rem; color: #87c2fa; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+footer { margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid #263b55; color: #8499b4; font-size: .78rem; }
+@media (max-width: 600px) { .topbar, footer { align-items: flex-start; flex-direction: column; } .hero { padding-top: 2.5rem; } .email { padding: 1rem; } .email-top { flex-direction: column; } }

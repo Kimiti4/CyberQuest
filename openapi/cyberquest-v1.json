@@ -3,7 +3,7 @@
   "info": {
     "title": "CYBERQUEST API",
     "version": "1.0.0",
-    "description": "Proposed contract only. No runtime implementation is implied."
+    "description": "Proposed contract includes the stateless synthetic demo. Demo routes are unauthenticated and intended only for local/development use."
   },
   "tags": [
     {
@@ -21,6 +21,10 @@
     {
       "name": "Learner progress",
       "description": "Server-authoritative learner progress, XP and competency summaries."
+    },
+    {
+      "name": "Demo missions",
+      "description": "Stateless fictional training demo only; no accounts, learner data, persistence, XP or mastery."
     }
   ],
   "paths": {
@@ -448,6 +452,63 @@
           }
         }
       }
+    },
+    "/v1/demo/missions/phishing-detective": {
+      "get": {
+        "tags": [
+          "Demo missions"
+        ],
+        "summary": "Get the fictional Phishing Detective mission",
+        "operationId": "getDemoPhishingDetective",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Versioned fictional mission content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoMission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/demo/missions/phishing-detective/assessment": {
+      "post": {
+        "tags": [
+          "Demo missions"
+        ],
+        "summary": "Evaluate a synthetic Phishing Detective submission",
+        "operationId": "assessDemoPhishingDetective",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoAssessmentSubmission"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deterministic practice feedback; no XP, mastery or persistence",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoAssessmentResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid submission"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -701,6 +762,305 @@
           "competency_count": {
             "type": "integer",
             "minimum": 0
+          }
+        }
+      },
+      "DemoAssessmentSubmission": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "selected_indicator_ids",
+          "response_id"
+        ],
+        "properties": {
+          "selected_indicator_ids": {
+            "type": "array",
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 64
+            }
+          },
+          "response_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        }
+      },
+      "DemoMission": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schema_version",
+          "mission_id",
+          "version",
+          "title",
+          "organisation",
+          "difficulty",
+          "estimated_minutes",
+          "simulation_notice",
+          "briefing",
+          "email",
+          "indicators",
+          "response_options",
+          "learning_objectives"
+        ],
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "const": 1
+          },
+          "mission_id": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "organisation": {
+            "type": "string"
+          },
+          "difficulty": {
+            "type": "string",
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced"
+            ]
+          },
+          "estimated_minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "simulation_notice": {
+            "type": "string"
+          },
+          "briefing": {
+            "type": "string"
+          },
+          "email": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "display_name",
+              "from_address",
+              "reply_to",
+              "subject",
+              "received_label",
+              "body",
+              "displayed_link",
+              "attachment_label"
+            ],
+            "properties": {
+              "display_name": {
+                "type": "string"
+              },
+              "from_address": {
+                "type": "string"
+              },
+              "reply_to": {
+                "type": "string"
+              },
+              "subject": {
+                "type": "string"
+              },
+              "received_label": {
+                "type": "string"
+              },
+              "body": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "displayed_link": {
+                "type": "string"
+              },
+              "attachment_label": {
+                "type": "string"
+              }
+            }
+          },
+          "indicators": {
+            "type": "array",
+            "minItems": 8,
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label",
+                "category"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "response_options": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "learning_objectives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DemoAssessmentResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mission_id",
+          "mission_version",
+          "score",
+          "max_score",
+          "indicator_score",
+          "response_score",
+          "identified_indicators",
+          "missed_indicators",
+          "incorrect_selections",
+          "response_correct",
+          "feedback",
+          "response_explanation",
+          "learning_status",
+          "xp_awarded",
+          "competency_awarded",
+          "persistence",
+          "simulation_notice"
+        ],
+        "properties": {
+          "mission_id": {
+            "type": "string"
+          },
+          "mission_version": {
+            "type": "integer"
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "max_score": {
+            "type": "integer",
+            "const": 10
+          },
+          "indicator_score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "response_score": {
+            "type": "integer",
+            "enum": [
+              0,
+              5
+            ]
+          },
+          "identified_indicators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missed_indicators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "incorrect_selections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "response_correct": {
+            "type": "boolean"
+          },
+          "feedback": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "indicator_id",
+                "is_warning_sign",
+                "selected",
+                "identified",
+                "explanation"
+              ],
+              "properties": {
+                "indicator_id": {
+                  "type": "string"
+                },
+                "is_warning_sign": {
+                  "type": "boolean"
+                },
+                "selected": {
+                  "type": "boolean"
+                },
+                "identified": {
+                  "type": "boolean"
+                },
+                "explanation": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "response_explanation": {
+            "type": "string"
+          },
+          "learning_status": {
+            "type": "string",
+            "const": "practice_feedback_only"
+          },
+          "xp_awarded": {
+            "type": "integer",
+            "const": 0
+          },
+          "competency_awarded": {
+            "type": "boolean",
+            "const": false
+          },
+          "persistence": {
+            "type": "string",
+            "const": "not_saved"
+          },
+          "simulation_notice": {
+            "type": "string"
           }
         }
       }

@@ -19,3 +19,5 @@ Status vocabulary: NOT_STARTED, IN_PROGRESS, PARTIAL, DESIGN_ONLY, PASS, FAIL, B
 | CQ-REQ-013 | Security controls have reproducible adversarial verification | CQ-00.6 security verification plan | CI-backed negative tests with commit and run evidence | NOT_STARTED |
 
 For every approved requirement, add implementation paths, named test cases, CI run URL and commit SHA when implemented. A design reference alone is not implementation evidence.
+
+| CQ-REQ-014 | Phishing Detective demo evaluates synthetic choices on the server and distinguishes warning signs from neutral facts | CQ-00.7 vertical slice; OpenAPI demo schemas | Backend positive/negative scoring tests; web contract tests; Android/web CI; manual end-to-end still pending | IN_PROGRESS |
