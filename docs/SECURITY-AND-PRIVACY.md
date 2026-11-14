@@ -23,13 +23,13 @@
 - [Risk register](RISK-REGISTER.md)
 - [Operations and recovery baseline](OPERATIONS-AND-RECOVERY.md)
 
-The threat model covers STRIDE, system assets, actors, trust boundaries, privacy data categories, Kenyan legal review work, child-safety requirements, cyber-safety and future lab containment. It is a design baseline only.
+The threat model covers STRIDE, system assets, actors, trust boundaries, privacy data categories, adults-only age scope, Kenyan legal review work deferred to production readiness, cyber-safety and future lab containment. It is a design baseline only.
 
 ## Privacy and legal boundary
 
-CYBERQUEST targets Kenya and may later serve international learners. Before live personal-data collection, obtain qualified Kenyan privacy/legal review of the Data Protection Act, 2019; applicable 2021 regulations; ODPC guidance; controller/processor roles; ODPC registration applicability; lawful bases; notices; rights workflows; processor contracts; cross-border transfers; retention and incident obligations.
+CYBERQUEST targets Kenya and may later serve international learners. Before public beta or any live learner personal-data collection, obtain qualified Kenyan privacy/legal review of the Data Protection Act, 2019; applicable 2021 regulations; ODPC guidance; controller/processor roles; ODPC registration applicability; lawful bases; notices; rights workflows; processor contracts; cross-border transfers; retention and incident obligations.
 
-No minor-facing service may launch until age scope, age assurance, parent/guardian consent mechanisms where required, best-interests safeguards, child-friendly notices and safeguarding workflows have been reviewed and approved. Do not assume consent is the lawful basis for every processing purpose.
+The initial release is adults-only (18+). Implement and test a proportionate age gate before live learner registration. Any future expansion to minors requires separate founder approval and new legal/safeguarding review. Do not assume consent is the lawful basis for every processing purpose.
 
 This baseline is not legal advice, a completed DPIA or a compliance certification.
 
