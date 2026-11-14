@@ -2,7 +2,7 @@
 
 **Learn. Hack. Defend. Master.**
 
-CYBERQUEST is an Android-first cybersecurity learning and digital-protection platform, with a companion web experience. It combines practical security education, defensive decision-making, deterministic scenario simulations and evidence-based competency development.
+CYBERQUEST is an Android-first cybersecurity learning and digital-protection platform for adults aged 18 and above, with a companion web experience. It combines practical security education, defensive decision-making, deterministic scenario simulations and evidence-based competency development. The initial release is adults-only; minors are out of scope.
 
 ## Programme status
 
@@ -14,6 +14,8 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 - CQ-00.5 — Android and Web Reproducible Build Foundations: **PASS** on verified candidate `0c95b30c990d0a9fc0247ded70fd5bf163f27261`.
 - CQ-00.6 — Security, Privacy and Cyber-Safety Threat Model: **DESIGN BASELINE COMPLETE; CQ00-04 PARTIAL**. Runtime controls, legal review and adversarial security tests remain open.
 - CI verified Android/Linux build, uncached unit tests, debug APK assembly and lint; Windows Gradle wrapper integrity/startup; web clean install from committed lock, typecheck, five contract tests, warning-free OpenAPI lint and Next.js production build; Python/PostgreSQL foundation suite also passed.
+- The next demonstrable prototype may use synthetic accounts and fictional data only; no live identity provider or real learner personal data is approved for the demo.
+- Cloud provider and exact processing region, formal legal review, privacy procedures and final mandatory-record retention schedule are deferred until production-readiness and must be resolved before public beta/live learner data.
 - No production application, real device scanning, malware detection or cyber-range execution is claimed.
 
 ## Product principles
