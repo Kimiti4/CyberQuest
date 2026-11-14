@@ -14,7 +14,7 @@ Status vocabulary: NOT_STARTED, IN_PROGRESS, PARTIAL, DESIGN_ONLY, PASS, FAIL, B
 | CQ-REQ-008 | Future labs are isolated and fail closed | CQ-00.6 threat model | Deferred lab isolation adversarial suite | DEFERRED |
 | CQ-REQ-009 | Authentication and session lifecycle resist takeover | CQ-00.6 threat model §9 | Token, recovery, revocation and abuse tests | NOT_STARTED |
 | CQ-REQ-010 | Personal data is processed for documented purposes and retention | CQ-00.6 threat model §7–8 | Legal review, rights workflow and retention/deletion tests | NOT_STARTED |
-| CQ-REQ-011 | Child data is protected and age scope is explicit | CQ-00.6 threat model §8 | Founder decision, counsel review and age/guardian workflow tests | BLOCKED |
+| CQ-REQ-011 | Initial release is restricted to adults aged 18+ | Product baseline; CQ-00.6 threat model §8 | Verify 18+ eligibility gate, negative underage registration path and no unnecessary DOB collection | DESIGN_ONLY |
 | CQ-REQ-012 | Content publication prevents unsafe or executable payloads | CQ-00.6 threat model §10 | Schema, injection and publication-approval tests | DESIGN_ONLY |
 | CQ-REQ-013 | Security controls have reproducible adversarial verification | CQ-00.6 security verification plan | CI-backed negative tests with commit and run evidence | NOT_STARTED |
 
