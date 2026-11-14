@@ -1,12 +1,12 @@
 # API Contract Baseline
 
-**Status: proposed contract v1; not an implemented API.**
+**Status: mixed.** The authenticated learner API remains a proposed contract and is not implemented. CQ-00.7 implements only two stateless synthetic demo routes.
 
 ## Contract rules
 
 - Base path: `/v1`; HTTPS is required outside local development.
 - Format: JSON request/response bodies; UTF-8.
-- Authentication: bearer access token from the selected identity provider. The provider and exact token claims remain undecided.
+- Authentication: bearer access token from the selected identity provider for learner-owned routes. The provider and exact token claims remain undecided. The two `/v1/demo/` routes are explicitly unauthenticated, stateless and local/development only.
 - Authorization: server-side checks on every learner-owned resource; object identifiers are not authorization.
 - Time: RFC 3339 UTC timestamps.
 - IDs: opaque UUID strings; clients must not infer meaning from them.
@@ -16,7 +16,13 @@
 - Pagination: cursor-based for collections; bounded page size.
 - Rate limits: enforced server-side; return 429 with a retry hint where safe.
 
-## Initial resource groups
+## Implemented demo slice
+
+- `GET /v1/demo/missions/phishing-detective` returns versioned fictional mission content.
+- `POST /v1/demo/missions/phishing-detective/assessment` evaluates bounded learner choices on the server and returns practice feedback.
+- These routes do not create accounts, persist attempts, award XP or certify competencies. Do not expose them publicly without a separate abuse/rate-control and deployment review.
+
+## Proposed learner resource groups
 
 1. Health — liveness and readiness, no learner data.
 2. Learning catalogue — published paths, modules, lessons and mission metadata.
@@ -29,7 +35,7 @@ The client may display content and collect choices. It cannot decide authoritati
 
 ## Contract artefact
 
-`openapi/cyberquest-v1.json` is the machine-readable draft. It is a design contract only. No server implementation, identity integration, schema migration or endpoint runtime test is claimed in CQ-00.
+`openapi/cyberquest-v1.json` is the machine-readable contract. Its learner resource paths remain proposed. The CQ-00.7 demo paths have FastAPI implementations and automated tests; their local runtime/manual end-to-end verification remains a separate acceptance item. No identity integration, learner-data persistence or production endpoint is claimed.
 
 ## Deferred contract details
 
