@@ -37,4 +37,4 @@ def test_security_controls_are_not_claimed_as_implemented() -> None:
     model = (ROOT / "docs/CQ-00.6-SECURITY-PRIVACY-THREAT-MODEL.md").read_text(encoding="utf-8")
     assert "Identity provider not selected; NOT IMPLEMENTED" in model
     assert "runtime NOT IMPLEMENTED" in model
-    assert "No production deployment" in model
+    assert "There is no production deployment" in model
