@@ -791,13 +791,15 @@
       },
       "DemoMission": {
         "type": "object",
-        "description": "Public scenario content; does not expose scoring rubric.",
+        "additionalProperties": false,
         "required": [
           "schema_version",
           "mission_id",
           "version",
           "title",
           "organisation",
+          "difficulty",
+          "estimated_minutes",
           "simulation_notice",
           "briefing",
           "email",
@@ -843,20 +845,89 @@
           },
           "email": {
             "type": "object",
-            "additionalProperties": false
+            "additionalProperties": false,
+            "required": [
+              "display_name",
+              "from_address",
+              "reply_to",
+              "subject",
+              "received_label",
+              "body",
+              "displayed_link",
+              "attachment_label"
+            ],
+            "properties": {
+              "display_name": {
+                "type": "string"
+              },
+              "from_address": {
+                "type": "string"
+              },
+              "reply_to": {
+                "type": "string"
+              },
+              "subject": {
+                "type": "string"
+              },
+              "received_label": {
+                "type": "string"
+              },
+              "body": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "displayed_link": {
+                "type": "string"
+              },
+              "attachment_label": {
+                "type": "string"
+              }
+            }
           },
           "indicators": {
             "type": "array",
+            "minItems": 8,
+            "maxItems": 8,
             "items": {
               "type": "object",
-              "additionalProperties": false
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label",
+                "category"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                }
+              }
             }
           },
           "response_options": {
             "type": "array",
             "items": {
               "type": "object",
-              "additionalProperties": false
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                }
+              }
             }
           },
           "learning_objectives": {
@@ -869,16 +940,25 @@
       },
       "DemoAssessmentResult": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "mission_id",
           "mission_version",
           "score",
           "max_score",
+          "indicator_score",
+          "response_score",
+          "identified_indicators",
+          "missed_indicators",
+          "incorrect_selections",
+          "response_correct",
+          "feedback",
+          "response_explanation",
+          "learning_status",
           "xp_awarded",
           "competency_awarded",
           "persistence",
-          "learning_status",
-          "feedback"
+          "simulation_notice"
         ],
         "properties": {
           "mission_id": {
@@ -896,6 +976,69 @@
             "type": "integer",
             "const": 10
           },
+          "indicator_score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "response_score": {
+            "type": "integer",
+            "enum": [
+              0,
+              5
+            ]
+          },
+          "identified_indicators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missed_indicators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "incorrect_selections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "response_correct": {
+            "type": "boolean"
+          },
+          "feedback": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "indicator_id",
+                "identified",
+                "explanation"
+              ],
+              "properties": {
+                "indicator_id": {
+                  "type": "string"
+                },
+                "identified": {
+                  "type": "boolean"
+                },
+                "explanation": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "response_explanation": {
+            "type": "string"
+          },
+          "learning_status": {
+            "type": "string",
+            "const": "practice_feedback_only"
+          },
           "xp_awarded": {
             "type": "integer",
             "const": 0
@@ -908,15 +1051,8 @@
             "type": "string",
             "const": "not_saved"
           },
-          "learning_status": {
-            "type": "string",
-            "const": "practice_feedback_only"
-          },
-          "feedback": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
+          "simulation_notice": {
+            "type": "string"
           }
         }
       }

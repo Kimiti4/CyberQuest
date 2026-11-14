@@ -50,3 +50,17 @@ test("stateless demo routes are explicitly unauthenticated and non-authoritative
   assert.ok(!("xp" in submission.properties));
   assert.equal(contract.components.schemas.DemoAssessmentResult.properties.xp_awarded.const, 0);
 });
+
+
+test("demo mission and assessment schemas describe the actual API payloads", () => {
+  const mission = contract.components.schemas.DemoMission;
+  assert.ok(mission.properties.email.properties.from_address);
+  assert.ok(mission.properties.email.properties.reply_to);
+  assert.ok(mission.properties.indicators.items.properties.id);
+  assert.ok(mission.properties.response_options.items.properties.id);
+  const result = contract.components.schemas.DemoAssessmentResult;
+  for (const field of ["missed_indicators", "incorrect_selections", "response_correct", "response_explanation"]) {
+    assert.ok(result.properties[field], field);
+  }
+  assert.equal(result.properties.persistence.const, "not_saved");
+});
