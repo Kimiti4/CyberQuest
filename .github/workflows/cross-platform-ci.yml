@@ -85,3 +85,46 @@ jobs:
       - name: Build production web application
         working-directory: web
         run: npm run build
+
+  demo-integration:
+    name: FastAPI and Next.js demo integration
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # actions/checkout v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # actions/setup-python v7.1.0
+        with:
+          python-version: "3.12.16"
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # actions/setup-node v6.4.0
+        with:
+          node-version: "24.22.3"
+      - name: Install hash-locked backend dependencies
+        run: python -m pip install --disable-pip-version-check --require-hashes -r requirements-lock.txt
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci --no-audit --no-fund
+      - name: Build web application
+        working-directory: web
+        run: npm run build
+      - name: Start FastAPI demo API
+        run: |
+          PYTHONPATH=src python -m uvicorn cyberquest.main:app --host 127.0.0.1 --port 8000 > "$RUNNER_TEMP/cyberquest-api.log" 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8000/health/live >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/cyberquest-api.log"
+          exit 1
+      - name: Start Next.js production server
+        working-directory: web
+        env:
+          CYBERQUEST_API_BASE_URL: http://127.0.0.1:8000
+        run: |
+          npm run start -- --hostname 127.0.0.1 > "$RUNNER_TEMP/cyberquest-web.log" 2>&1 &
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent http://127.0.0.1:3000/api/demo/mission >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat "$RUNNER_TEMP/cyberquest-web.log"
+          exit 1
+      - name: Verify live API-to-web-proxy assessment flow
+        run: python scripts/verify_demo_integration.py
