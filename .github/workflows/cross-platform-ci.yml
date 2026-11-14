@@ -36,6 +36,13 @@ jobs:
       - name: Run clean Android build, unit tests and lint without build cache
         working-directory: android
         run: sh ./gradlew --no-daemon --no-build-cache clean testDebugUnitTest assembleDebug lint
+      - name: Publish demo debug APK artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # actions/upload-artifact v7.0.2
+        with:
+          name: cyberquest-cq-00-7-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
 
   android-windows-wrapper:
     name: Android Gradle wrapper smoke test (Windows)

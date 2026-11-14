@@ -17,7 +17,7 @@ CYBERQUEST is an Android-first cybersecurity learning and digital-protection pla
 - CI verified Android/Linux build, uncached unit tests, debug APK assembly and lint; Windows Gradle wrapper integrity/startup; web clean install from committed lock, typecheck, five contract tests, warning-free OpenAPI lint and Next.js production build; Python/PostgreSQL foundation suite also passed.
 - CQ-00.7 implements a local-only Phishing Detective demo using fictional data. It has no live identity provider, account registration, saved learner data, XP or competency awards.
 - Cloud provider and exact processing region, formal legal review, privacy procedures and final mandatory-record retention schedule are deferred until production-readiness and must be resolved before public beta/live learner data.
-- No public learner-facing deployment, real device scanning, malware detection or cyber-range execution is claimed.
+- No production application is claimed. There is no public learner-facing deployment, real device scanning, malware detection or cyber-range execution.
 
 ## Product principles
 
