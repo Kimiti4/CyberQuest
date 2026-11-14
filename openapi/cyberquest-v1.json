@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "CYBERQUEST API",
-    "version": "1.1.0",
+    "version": "1.0.0",
     "description": "Proposed contract includes the stateless synthetic demo. Demo routes are unauthenticated and intended only for local/development use."
   },
   "tags": [

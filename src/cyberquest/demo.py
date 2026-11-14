@@ -99,6 +99,9 @@ def evaluate_submission(submission: AssessmentSubmission) -> dict:
     unknown_ids = set(submission.selected_indicator_ids) - known_ids
     if unknown_ids:
         raise HTTPException(status_code=422, detail={"code": "unknown_indicator"})
+    known_response_ids = {item.id for item in mission.response_options}
+    if submission.response_id not in known_response_ids:
+        raise HTTPException(status_code=422, detail={"code": "unknown_response"})
     correct_selected = set(submission.selected_indicator_ids) & CORRECT_INDICATORS
     incorrect_selected = set(submission.selected_indicator_ids) - CORRECT_INDICATORS
     indicator_score = max(0, len(correct_selected) - len(incorrect_selected))

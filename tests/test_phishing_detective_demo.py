@@ -91,3 +91,12 @@ def test_submission_bounds_are_enforced() -> None:
         },
     )
     assert response.status_code == 422
+
+
+def test_unknown_response_is_rejected() -> None:
+    response = client.post(
+        "/v1/demo/missions/phishing-detective/assessment",
+        json={"selected_indicator_ids": [], "response_id": "invented_response"},
+    )
+    assert response.status_code == 422
+    assert response.json()["detail"]["code"] == "unknown_response"

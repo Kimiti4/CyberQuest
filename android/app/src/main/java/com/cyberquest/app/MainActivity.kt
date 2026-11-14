@@ -50,6 +50,7 @@ private data class DemoMission(
     val options: List<DemoOption>,
 )
 
+private data class DemoFeedback(val label: String, val identified: Boolean)
 private data class DemoResult(
     val score: Int,
     val maxScore: Int,
@@ -57,6 +58,9 @@ private data class DemoResult(
     val xpAwarded: Int,
     val competencyAwarded: Boolean,
     val persistence: String,
+    val missedIndicators: List<String>,
+    val incorrectSelections: List<String>,
+    val feedback: List<DemoFeedback>,
 )
 
 private object DemoApi {
@@ -133,6 +137,11 @@ private object DemoApi {
         xpAwarded = json.getInt("xp_awarded"),
         competencyAwarded = json.getBoolean("competency_awarded"),
         persistence = json.getString("persistence"),
+        missedIndicators = json.getJSONArray("missed_indicators").toStringList(),
+        incorrectSelections = json.getJSONArray("incorrect_selections").toStringList(),
+        feedback = json.getJSONArray("feedback").toObjectList {
+            DemoFeedback(it.getString("explanation"), it.getBoolean("identified"))
+        },
     )
 
     private fun JSONArray.toStringList(): List<String> = (0 until length()).map { getString(it) }
@@ -251,6 +260,13 @@ private fun CyberQuestApp() {
                             Text("Your practice result", style = MaterialTheme.typography.headlineMedium)
                             Text("${result.value!!.score} / ${result.value!!.maxScore}", style = MaterialTheme.typography.displaySmall)
                             Text(result.value!!.responseExplanation)
+                            Text("Indicator feedback", style = MaterialTheme.typography.titleMedium)
+                            result.value!!.feedback.forEach { item ->
+                                Text("${if (item.identified) "Identified" else "Missed"} · ${item.label}")
+                            }
+                            if (result.value!!.incorrectSelections.isNotEmpty()) {
+                                Text("Incorrect selections: ${result.value!!.incorrectSelections.joinToString()}")
+                            }
                             Text("XP awarded: ${result.value!!.xpAwarded}")
                             Text("Competency awarded: ${result.value!!.competencyAwarded}")
                             Text("Saved: ${result.value!!.persistence != "not_saved"}")
