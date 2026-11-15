@@ -9,7 +9,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 | CQ00-03 | Architecture | Cross-pillar topology, module ownership, server authority and offline-sync contract reviewed and founder-ratified | PASS |
 | CQ00-04 | Security and privacy | STRIDE threat model, privacy data inventory, Kenyan legal workstream, cyber-safety boundaries and implementation/verification plan | PARTIAL — design baseline documented; production legal/provider/retention decisions and runtime controls remain open; synthetic demo may proceed |
 | CQ00-05 | Reproducible toolchain | Python hash lock plus pinned Android/web toolchains, committed wrapper and npm lock, clean CI builds | PASS |
-| CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; authentication/authorization and learner API contracts remain unimplemented | PARTIAL |
+| CQ00-06 | API and data contracts | Initial FastAPI health slice, SQLAlchemy identity models and PostgreSQL migration verified; CQ-00.7 stateless demo routes implemented; authentication/authorization and learner APIs remain unimplemented | PARTIAL |
 | CQ00-07 | Automated verification | PostgreSQL-backed CI, Android unit tests and web contract tests; integration, emulator and security verification remain pending | PARTIAL |
 | CQ00-08 | Traceability | Requirements map to implementation and executable verification | DRAFT |
 | CQ00-09 | Operational readiness | Initial budget, risk register and backup/recovery requirements documented; restore exercise and provider costs pending | PARTIAL |
@@ -22,7 +22,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 - CQ-00.4 toolchain assessment: Python backend foundation verified by run 43494824837; Android and web projects/builds were absent at CQ-00.4 close. CQ-00.5 adds the client scaffolds and CI evidence recorded below.
 - `tests/test_architecture_contract.py` checks selected documented invariants. It is a documentation contract test, not runtime proof of Android/web/API behavior.
 - `tests/test_android_wrapper_integrity.py` verifies the base64-encoded official Gradle wrapper payload and pinned distribution checksum; CI separately builds the Android project.
-- Draft OpenAPI contract: `openapi/cyberquest-v1.json` (design artefact; not a claim of complete API implementation).
+- OpenAPI contract: `openapi/cyberquest-v1.json`; learner routes remain proposed, while the CQ-00.7 synthetic demo routes have runtime implementations and contract tests.
 - API rules: `docs/API-CONTRACT.md`.
 - Conceptual entities and migration policy: `docs/DATA-MODEL.md`.
 - Development environment evidence and outstanding toolchain work: `docs/DEVELOPMENT-ENVIRONMENT.md`.
@@ -37,7 +37,11 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 - Python/PostgreSQL: lock drift check, hash-enforced install, `pip check`, migration upgrade/schema/downgrade/re-upgrade and full suite passed (25 passed, 1 non-blocking Starlette TestClient/AnyIO deprecation warning).
 - Committed web lock: `web/package-lock.json` at commit `87c792de906cd1dd4b0d777efb75798cee01f77f`; lockfileVersion 3, 308 package entries, 307 resolved packages with integrity hashes, SHA-256 `b1ee9065901b18543385e071878bcf5259a4dd0e10cb75cea8c0c2432805102a`.
 
-- CQ-00.6 threat model: `docs/CQ-00.6-SECURITY-PRIVACY-THREAT-MODEL.md` and `docs/CQ-00.6-SECURITY-VERIFICATION-PLAN.md`; STRIDE threats, data inventory, adults-only 18+ scope, cross-border/legal production-readiness workstreams, MVP content safety, future lab gates and adversarial verification requirements documented. Five documentation contract tests added. Initial CI run `43513140384` passed Android/Linux build, unit tests and lint; Windows wrapper smoke; web clean install, tests and production build. Foundation run `43513140357` failed one documentation assertion because the test expected `No production deployment` while the threat model stated `There is no production deployment`; database migration and all preceding foundation steps passed. Assertion corrected in this update; rerun required. This is design evidence only; no production security control, DPIA, legal review, identity integration, authorization implementation or runtime security test is claimed. CQ00-04 remains PARTIAL. Demo work must use synthetic accounts and fictional data only.
+- CQ-00.6 threat model: `docs/CQ-00.6-SECURITY-PRIVACY-THREAT-MODEL.md` and `docs/CQ-00.6-SECURITY-VERIFICATION-PLAN.md`; STRIDE threats, data inventory, adults-only 18+ scope, cross-border/legal production-readiness workstreams, MVP content safety, future lab gates and adversarial verification requirements documented. Five documentation contract tests added. Final CQ-00.6 head `0800dafdfe4b83a82c24d9613cbed0a240cc6621` was verified by Python/PostgreSQL run `43588301287` (migration schema test 1/1; complete suite 30/30 passed, one non-blocking Starlette/AnyIO deprecation warning) and cross-platform run `43588301231` (Android/Linux build, unit tests and lint; Windows wrapper smoke; web install, typecheck, contract tests, OpenAPI lint and production build all passed). This is design evidence only; no production security control, DPIA, legal review, identity integration, authorization implementation or runtime security test is claimed. CQ00-04 remains PARTIAL. Demo work must use synthetic data only.
+
+## CQ-00.7 status
+
+CQ-00.7 is tracked in [the demonstrable vertical-slice specification](CQ-00.7-DEMONSTRABLE-VERTICAL-SLICE.md) and [local demo runbook](CQ-00.7-LOCAL-DEMO.md). The branch/PR and current-head CI evidence are recorded in the CQ-00.7 PR. Android/web integration is implemented in the candidate branch; manual end-to-end verification and physical-device validation remain NOT RUN. The demo is local/development only and does not satisfy public beta or production gates.
 
 ## Status vocabulary
 

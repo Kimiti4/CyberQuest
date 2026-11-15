@@ -4,6 +4,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val demoApiBaseUrl = providers.gradleProperty("CYBERQUEST_DEMO_API_BASE_URL")
+    .orElse("https://127.0.0.1:8000")
+    .get()
+
 android {
     namespace = "com.cyberquest.app"
     compileSdk = 36
@@ -15,6 +19,7 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "DEMO_API_BASE_URL", "\"$demoApiBaseUrl\"")
     }
 
     buildFeatures {
