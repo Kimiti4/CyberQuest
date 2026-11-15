@@ -273,3 +273,76 @@ def test_logs_contain_no_payload_content_or_client_address(
     assert "127.0.0.1" not in record
     assert "method=POST" in record
     assert "path=/v1/demo/missions/phishing-detective/assessment" in record
+
+
+def test_forwarded_https_is_required_when_enabled() -> None:
+    upstream = RecordingApp()
+    gateway = build_gateway(upstream, require_forwarded_https=True)
+
+    rejected = call(gateway, "GET", MISSION_PATH)
+
+    assert rejected.status_code == 403
+    assert rejected.json() == {"detail": {"code": "https_required"}}
+    assert upstream.requests == []
+
+
+def test_forwarded_https_is_accepted_when_the_edge_reports_https() -> None:
+    upstream = RecordingApp(body={"mission_id": "phishing-detective-suspicious-invoice"})
+    gateway = build_gateway(upstream, require_forwarded_https=True)
+
+    response = call(
+        gateway, "GET", MISSION_PATH, headers={"X-Forwarded-Proto": "https"}
+    )
+
+    assert response.status_code == 200
+    assert [request.url.path for request in upstream.requests] == [MISSION_PATH]
+
+
+def test_forwarded_http_is_rejected_when_the_edge_reports_cleartext() -> None:
+    upstream = RecordingApp()
+    gateway = build_gateway(upstream, require_forwarded_https=True)
+
+    response = call(gateway, "GET", MISSION_PATH, headers={"X-Forwarded-Proto": "http"})
+
+    assert response.status_code == 403
+    assert response.json() == {"detail": {"code": "https_required"}}
+    assert upstream.requests == []
+
+
+def test_cf_visitor_scheme_is_checked_as_well() -> None:
+    upstream = RecordingApp()
+    gateway = build_gateway(upstream, require_forwarded_https=True)
+
+    response = call(
+        gateway,
+        "GET",
+        MISSION_PATH,
+        headers={
+            "X-Forwarded-Proto": "https",
+            "CF-Visitor": '{"scheme":"http"}',
+        },
+    )
+
+    assert response.status_code == 403
+    assert upstream.requests == []
+
+
+def test_forwarded_protocol_headers_are_not_forwarded_upstream() -> None:
+    upstream = RecordingApp()
+    gateway = build_gateway(upstream)
+
+    call(
+        gateway,
+        "GET",
+        MISSION_PATH,
+        headers={
+            "X-Forwarded-Proto": "https",
+            "X-Forwarded-Host": "public-host.example",
+            "CF-Visitor": '{"scheme":"https"}',
+        },
+    )
+
+    forwarded = upstream.requests[0]
+    assert "x-forwarded-proto" not in forwarded.headers
+    assert "x-forwarded-host" not in forwarded.headers
+    assert "cf-visitor" not in forwarded.headers

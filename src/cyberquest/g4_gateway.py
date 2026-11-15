@@ -58,16 +58,23 @@ MAX_RESPONSE_BYTES = 256 * 1024
 STRIPPED_REQUEST_HEADERS = frozenset(
     {
         "authorization",
+        "cf-visitor",
         "cookie",
         "proxy-authorization",
         "x-api-key",
         "x-forwarded-for",
+        "x-forwarded-host",
+        "x-forwarded-port",
         "x-forwarded-proto",
         "x-real-ip",
     }
 )
 
 FORWARDED_REQUEST_HEADERS = frozenset({"accept", "content-type"})
+
+#: Edge-supplied headers that describe the scheme the client actually used.
+FORWARDED_PROTO_HEADER = b"x-forwarded-proto"
+CF_VISITOR_HEADER = b"cf-visitor"
 
 RATE_LIMITED_METHODS = ("GET", "POST")
 
@@ -81,6 +88,7 @@ class GatewayConfig:
     get_rate_per_minute: int = DEFAULT_GET_RATE_PER_MINUTE
     post_rate_per_minute: int = DEFAULT_POST_RATE_PER_MINUTE
     upstream_timeout_seconds: float = DEFAULT_UPSTREAM_TIMEOUT_SECONDS
+    require_forwarded_https: bool = False
 
 
 @dataclass
@@ -140,6 +148,18 @@ class ExposureGateway:
         client = scope.get("client") or ("unknown", 0)
         source_key = str(client[0])
 
+        if self.config.require_forwarded_https and not self._forwarded_https(scope):
+            await self._send_json(
+                send,
+                403,
+                {"detail": {"code": "https_required"}},
+                "rejected",
+                started=started,
+                method=method,
+                path=path,
+            )
+            return
+
         if method not in RATE_LIMITED_METHODS:
             await self._reject_non_allowlisted(method, path, send, started)
             return
@@ -171,6 +191,23 @@ class ExposureGateway:
             return
 
         await self._forward(method, path, body, scope, send, started)
+
+    @staticmethod
+    def _forwarded_https(scope) -> bool:
+        """Check the scheme the tunnel edge reports for the client connection.
+
+        Fail-closed: the edge must state that the client used HTTPS. The
+        gateway is bound to loopback, so the edge header is the only evidence
+        of the client's scheme; a missing header is treated as cleartext.
+        """
+        headers = {name.lower(): value for name, value in scope.get("headers", [])}
+        proto = headers.get(FORWARDED_PROTO_HEADER)
+        if proto is None or proto.strip().lower() != b"https":
+            return False
+        visitor = headers.get(CF_VISITOR_HEADER)
+        if visitor is not None and b'"scheme":"http"' in visitor.replace(b" ", b"").lower():
+            return False
+        return True
 
     async def _read_body(self, receive) -> bytes | None:
         """Read the request body, returning None when it exceeds the limit."""
@@ -300,6 +337,7 @@ def create_gateway_app(
     get_rate_per_minute: int = DEFAULT_GET_RATE_PER_MINUTE,
     post_rate_per_minute: int = DEFAULT_POST_RATE_PER_MINUTE,
     upstream_timeout_seconds: float = DEFAULT_UPSTREAM_TIMEOUT_SECONDS,
+    require_forwarded_https: bool = False,
     transport: httpx.AsyncBaseTransport | None = None,
 ) -> ExposureGateway:
     """Build the gateway application used by the G4 tunnel and by tests."""
@@ -309,6 +347,7 @@ def create_gateway_app(
         get_rate_per_minute=get_rate_per_minute,
         post_rate_per_minute=post_rate_per_minute,
         upstream_timeout_seconds=upstream_timeout_seconds,
+        require_forwarded_https=require_forwarded_https,
     )
     return ExposureGateway(config, transport=transport)
 
@@ -351,6 +390,14 @@ def _parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         default=0,
         help="Optional loopback port for a gateway health endpoint.",
     )
+    parser.add_argument(
+        "--require-forwarded-https",
+        action="store_true",
+        help=(
+            "Require the tunnel edge to report an HTTPS client connection. "
+            "Enable whenever the gateway is exposed through a tunnel."
+        ),
+    )
     return parser.parse_args(list(argv) if argv is not None else None)
 
 
@@ -368,15 +415,18 @@ def main(argv: Iterable[str] | None = None) -> int:
         max_body_bytes=args.max_body_bytes,
         get_rate_per_minute=args.get_rate_per_minute,
         post_rate_per_minute=args.post_rate_per_minute,
+        require_forwarded_https=args.require_forwarded_https,
     )
     LOGGER.info(
-        "gateway_start upstream=%s bind=%s:%s max_body_bytes=%s get_rate=%s post_rate=%s",
+        "gateway_start upstream=%s bind=%s:%s max_body_bytes=%s get_rate=%s post_rate=%s "
+        "require_forwarded_https=%s",
         args.upstream,
         args.host,
         args.port,
         args.max_body_bytes,
         args.get_rate_per_minute,
         args.post_rate_per_minute,
+        args.require_forwarded_https,
     )
     if args.health_port:
         asyncio.run(_run_with_health(app, args))
