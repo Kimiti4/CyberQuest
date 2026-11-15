@@ -187,6 +187,39 @@ def test_neutral_facts_are_not_scored_as_warning_indicators() -> None:
     ]
 
 
+def test_feedback_contains_educational_guidance_for_every_indicator() -> None:
+    response = client.post(
+        "/v1/demo/missions/phishing-detective/assessment",
+        json={
+            "selected_indicator_ids": ["sender_domain"],
+            "response_id": "verify_and_report",
+        },
+    )
+    assert response.status_code == 200
+    feedback = response.json()["feedback"]
+    assert len(feedback) == 8
+    for item in feedback:
+        guidance = item["guidance"]
+        assert guidance.strip(), f"missing guidance for {item['indicator_id']}"
+        assert len(guidance) > 40
+    warning_ids = {
+        item["indicator_id"] for item in feedback if item["is_warning_sign"]
+    }
+    assert warning_ids == {
+        "sender_domain", "reply_to_mismatch", "urgency_pressure",
+        "unexpected_invoice", "unverified_link",
+    }
+
+
+def test_mission_content_includes_guidance_for_all_indicators() -> None:
+    response = client.get("/v1/demo/missions/phishing-detective")
+    assert response.status_code == 200
+    mission = response.json()
+    for indicator in mission["indicators"]:
+        assert "guidance" in indicator
+        assert indicator["guidance"].strip()
+
+
 def test_feedback_distinguishes_neutral_facts_from_missed_warning_signs() -> None:
     response = client.post(
         "/v1/demo/missions/phishing-detective/assessment",

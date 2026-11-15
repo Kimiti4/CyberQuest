@@ -41,5 +41,6 @@ p { line-height: 1.65; color: #c7d3e3; }
 .score span { color: #a9bdd5; }
 .feedback { display: grid; gap: .65rem; padding-left: 1.2rem; color: #d2dceb; line-height: 1.5; }
 .feedback span { display: inline-block; min-width: 5.2rem; margin-right: .5rem; color: #87c2fa; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
+.feedback .guidance { display: block; margin-top: .3rem; color: #9fb0c7; font-size: .86rem; line-height: 1.45; }
 footer { margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid #263b55; color: #8499b4; font-size: .78rem; }
 @media (max-width: 600px) { .topbar, footer { align-items: flex-start; flex-direction: column; } .hero { padding-top: 2.5rem; } .email { padding: 1rem; } .email-top { flex-direction: column; } }

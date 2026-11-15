@@ -25,3 +25,9 @@ test("web demo explicitly labels simulation and inert link", () => {
   assert.match(page, /not clickable/);
   assert.match(page, /No data saved/);
 });
+
+test("web demo renders per-indicator educational guidance", () => {
+  assert.match(page, /feedback: \{ indicator_id: string; is_warning_sign: boolean; selected: boolean; identified: boolean; explanation: string; guidance: string }\[\]/);
+  assert.match(page, /item\.guidance/);
+  assert.match(page, /className="guidance"/);
+});

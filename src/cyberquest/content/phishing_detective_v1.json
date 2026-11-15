@@ -28,42 +28,50 @@
     {
       "id": "sender_domain",
       "label": "The sender domain is not independently verified as belonging to Nexus Corporation.",
-      "category": "sender"
+      "category": "sender",
+      "guidance": "A display name can claim any organisation. Check the actual sender domain against a known official source before trusting the message."
     },
     {
       "id": "reply_to_mismatch",
       "label": "The reply-to address uses a different external domain.",
-      "category": "sender"
+      "category": "sender",
+      "guidance": "Replies follow the reply-to address, not the displayed sender. A mismatch means answers go to an unrelated external destination."
     },
     {
       "id": "urgency_pressure",
       "label": "The message pressures the recipient to act within two hours.",
-      "category": "language"
+      "category": "language",
+      "guidance": "Artificial deadlines are designed to make people act before thinking. Urgency is a manipulation signal; slow down and verify independently."
     },
     {
       "id": "unexpected_invoice",
       "label": "The invoice is unexpected and should be verified independently.",
-      "category": "context"
+      "category": "context",
+      "guidance": "Unexpected payment demands should be confirmed against your own records through an independently obtained contact, never through details in the message."
     },
     {
       "id": "unverified_link",
       "label": "The displayed invoice link uses an unverified domain.",
-      "category": "link"
+      "category": "link",
+      "guidance": "Displayed text can hide the real destination. Do not click; navigate to the official site directly or ask the organisation through a known channel."
     },
     {
       "id": "invoice_reference",
       "label": "The message contains a specific invoice reference number. This fact alone is not suspicious.",
-      "category": "context"
+      "category": "context",
+      "guidance": "Specific reference numbers are normal business detail. They add realism but do not make a message legitimate or malicious by themselves."
     },
     {
       "id": "team_greeting",
       "label": "The message is addressed to the Finance Team. A team greeting alone is not suspicious.",
-      "category": "context"
+      "category": "context",
+      "guidance": "Generic team greetings are common in legitimate bulk communication. A greeting alone is not evidence of a phishing attempt."
     },
     {
       "id": "business_hours",
       "label": "The message arrived at 09:14. The time alone is not suspicious.",
-      "category": "context"
+      "category": "context",
+      "guidance": "Receiving email during normal working hours is expected. Arrival time alone provides no evidence about whether a message is safe."
     }
   ],
   "response_options": [

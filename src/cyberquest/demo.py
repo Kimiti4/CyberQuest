@@ -29,6 +29,7 @@ class Indicator(BaseModel):
     id: str
     label: str
     category: str
+    guidance: str
 
 
 class ResponseOption(BaseModel):
@@ -119,6 +120,7 @@ def evaluate_submission(submission: AssessmentSubmission) -> dict:
             "selected": indicator.id in set(submission.selected_indicator_ids),
             "identified": indicator.id in correct_selected,
             "explanation": indicator.label,
+            "guidance": indicator.guidance,
         }
         for indicator in mission.indicators
     ]
