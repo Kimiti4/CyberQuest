@@ -52,6 +52,7 @@ private data class DemoMission(
 
 private data class DemoFeedback(
     val label: String, val isWarningSign: Boolean, val selected: Boolean, val identified: Boolean,
+    val guidance: String,
 )
 private data class DemoResult(
     val score: Int,
@@ -87,6 +88,9 @@ private object DemoApi {
     private fun request(method: String, path: String, body: String?, done: (Result<JSONObject>) -> Unit) {
         Thread {
             val result = runCatching {
+                if (!baseUrl.startsWith("https://")) {
+                    error("Refusing to contact a non-HTTPS demo API URL")
+                }
                 val connection = URL(baseUrl + path).openConnection() as HttpURLConnection
                 try {
                     connection.requestMethod = method
@@ -145,6 +149,7 @@ private object DemoApi {
             DemoFeedback(
                 it.getString("explanation"), it.getBoolean("is_warning_sign"),
                 it.getBoolean("selected"), it.getBoolean("identified"),
+                it.optString("guidance", ""),
             )
         },
     )
@@ -172,12 +177,20 @@ private fun CyberQuestApp() {
     val selected = remember { mutableStateListOf<String>() }
     val response = remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
+    val loadMission = {
+        loading.value = true
+        error.value = null
         DemoApi.getMission { outcome ->
             outcome.onSuccess { mission.value = it }
-                .onFailure { error.value = "Cannot reach the demo API. Configure CYBERQUEST_DEMO_API_BASE_URL and retry." }
+                .onFailure {
+                    error.value = "Cannot reach the demo API. Check the HTTPS API URL and retry."
+                }
             loading.value = false
         }
+    }
+
+    LaunchedEffect(Unit) {
+        loadMission()
     }
 
     MaterialTheme {
@@ -198,6 +211,7 @@ private fun CyberQuestApp() {
                         Text("Phishing Detective", style = MaterialTheme.typography.headlineMedium)
                         Text(error.value ?: "Demo unavailable")
                         Text("Start the FastAPI service and configure the API URL in the Android build.")
+                        Button(onClick = { loadMission() }) { Text("Retry") }
                     }
                 } else {
                     val data = mission.value!!
@@ -274,6 +288,9 @@ private fun CyberQuestApp() {
                                     else -> "Neutral fact"
                                 }
                                 Text("$status · ${item.label}")
+                                if (item.guidance.isNotBlank()) {
+                                    Text(item.guidance, style = MaterialTheme.typography.bodySmall)
+                                }
                             }
                             if (result.value!!.incorrectSelections.isNotEmpty()) {
                                 Text("Incorrect selections: ${result.value!!.incorrectSelections.joinToString()}")
