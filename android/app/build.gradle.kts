@@ -8,6 +8,12 @@ val demoApiBaseUrl = providers.gradleProperty("CYBERQUEST_DEMO_API_BASE_URL")
     .orElse("https://127.0.0.1:8000")
     .get()
 
+// The demo client talks HTTPS only. A cleartext value must fail the build
+// rather than produce an APK that silently downgrades transport security.
+require(demoApiBaseUrl.startsWith("https://")) {
+    "CYBERQUEST_DEMO_API_BASE_URL must use https:// (received a non-HTTPS value)"
+}
+
 android {
     namespace = "com.cyberquest.app"
     compileSdk = 36

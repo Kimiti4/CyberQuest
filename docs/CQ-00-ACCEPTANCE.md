@@ -41,7 +41,7 @@ CQ-00 establishes product and engineering foundations; it does not claim a deplo
 
 ## CQ-00.7 status
 
-CQ-00.7 is tracked in [the demonstrable vertical-slice specification](CQ-00.7-DEMONSTRABLE-VERTICAL-SLICE.md) and [local demo runbook](CQ-00.7-LOCAL-DEMO.md). The branch/PR and current-head CI evidence are recorded in the CQ-00.7 PR. Android/web integration is implemented in the candidate branch; manual end-to-end verification and physical-device validation remain NOT RUN. The demo is local/development only and does not satisfy public beta or production gates.
+CQ-00.7 is tracked in [the demonstrable vertical-slice specification](CQ-00.7-DEMONSTRABLE-VERTICAL-SLICE.md) and [local demo runbook](CQ-00.7-LOCAL-DEMO.md). Android/web integration is implemented; G1–G4 and G6 evidence was accepted, G4 was founder-accepted on 2026-11-18, and the G7 register was accepted with G7.1 PASS. **G5 broader device acceptance is DEFERRED — NOT WAIVED (2026-11-18) and remains NOT RUN**, so CQ-00.7.1 / CQ-00.7 remain PARTIAL and CQ-01 is blocked until G5 is executed and its acceptance criteria are independently assessed. Deferral is a documented residual gate, not a waiver or acceptance. Execution requires a reserved test device or emulator; no personal applications, messages or files may be inspected. The demo is local/development only and does not satisfy public beta or production gates.
 
 ## Status vocabulary
 

@@ -17,7 +17,6 @@ Status vocabulary: NOT_STARTED, IN_PROGRESS, PARTIAL, DESIGN_ONLY, PASS, FAIL, B
 | CQ-REQ-011 | Initial release is restricted to adults aged 18+ | Product baseline; CQ-00.6 threat model §8 | Verify 18+ eligibility gate, negative underage registration path and no unnecessary DOB collection | DESIGN_ONLY |
 | CQ-REQ-012 | Content publication prevents unsafe or executable payloads | CQ-00.6 threat model §10 | Schema, injection and publication-approval tests | DESIGN_ONLY |
 | CQ-REQ-013 | Security controls have reproducible adversarial verification | CQ-00.6 security verification plan | CI-backed negative tests with commit and run evidence | NOT_STARTED |
+| CQ-REQ-014 | Phishing Detective demo evaluates synthetic choices on the server and distinguishes warning signs from neutral facts | CQ-00.7 vertical slice; OpenAPI demo schemas | Backend positive/negative scoring tests; web contract tests; Android/web CI; manual end-to-end web run (G1) and physical-device run (G4), recorded in `docs/CQ-00.7.1-G7-CONSOLIDATED-EVIDENCE.md` §3; exact-head CI `43731138129` / `43731138100` on `052413f`; G4 founder-accepted 2026-11-18; G5 deferred — not waived | IN_PROGRESS — implementation verified and G4 accepted; G5 deferred (not waived) and checkpoint completion pending |
 
 For every approved requirement, add implementation paths, named test cases, CI run URL and commit SHA when implemented. A design reference alone is not implementation evidence.
-
-| CQ-REQ-014 | Phishing Detective demo evaluates synthetic choices on the server and distinguishes warning signs from neutral facts | CQ-00.7 vertical slice; OpenAPI demo schemas | Backend positive/negative scoring tests; web contract tests; Android/web CI; manual end-to-end still pending | IN_PROGRESS |
