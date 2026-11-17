@@ -4,14 +4,23 @@ This module is **not** production infrastructure. It exists only for the
 CQ-00.7.1-G4 acceptance window: a short-lived, narrowly scoped reverse proxy
 that sits between a temporary HTTPS tunnel and the local FastAPI demo service.
 
-Controls implemented here (per the approved G4 plan):
+Controls implemented here (per the approved G4 plan and the G7.1 review):
 
 * Route and method allowlist - only the two demo routes are forwarded.
 * Explicit request body limit (16 KiB by default) applied before forwarding.
-* Separate GET and POST rate limits per source address.
+* Separate GET and POST rate limits keyed by the TCP peer address. When the
+  gateway is reached through a single tunnel connector, every request arrives
+  from the same loopback peer, so each limit applies to the tunnel as a whole,
+  not per remote end user.
 * Explicit connect/read timeouts for the upstream call.
 * Minimal operational logging: no bodies, no headers, no client address.
-* No arbitrary outbound access: the upstream origin is a single configured URL.
+* No arbitrary outbound access: the upstream origin must be a structurally
+  valid plain-HTTP URL on a loopback IP literal (127.0.0.1 or ::1).
+* Mandatory HTTPS-edge enforcement: the tunnel edge must report that the client
+  connection used HTTPS (`X-Forwarded-Proto: https`, cross-checked against
+  `CF-Visitor`). There is no opt-out flag.
+* Loopback-only bind: the gateway always listens on 127.0.0.1; the bind address
+  is not operator-configurable.
 * Upstream failures surface as an explicit gateway error, never a false success.
 
 Run it with::
@@ -29,10 +38,17 @@ import time
 from collections import deque
 from dataclasses import dataclass, field
 from typing import Iterable
+from urllib.parse import urlsplit
 
 import httpx
 
 LOGGER = logging.getLogger("cyberquest.g4_gateway")
+
+#: The gateway never binds to anything except the IPv4 loopback address.
+GATEWAY_BIND_HOST = "127.0.0.1"
+
+#: The only upstream hosts accepted: loopback IP literals, never DNS names.
+LOOPBACK_HOSTS: frozenset[str] = frozenset({"127.0.0.1", "::1"})
 
 #: The only routes the gateway will forward. Paths must match exactly.
 ALLOWED_ROUTES: frozenset[tuple[str, str]] = frozenset(
@@ -79,6 +95,41 @@ CF_VISITOR_HEADER = b"cf-visitor"
 RATE_LIMITED_METHODS = ("GET", "POST")
 
 
+def validate_upstream_base_url(url: str) -> str:
+    """Validate and normalise the loopback upstream origin.
+
+    Structural validation only: the URL must be plain HTTP to a loopback IP
+    literal (``127.0.0.1`` or ``::1``) with no user information, path, query or
+    fragment. DNS names such as ``localhost`` are rejected because their
+    resolution is not controlled by this code.
+    """
+    if not isinstance(url, str) or not url:
+        raise ValueError("upstream URL is empty")
+    if url != url.strip() or any(character.isspace() for character in url):
+        raise ValueError("upstream URL must not contain whitespace")
+    try:
+        parts = urlsplit(url)
+        port = parts.port
+    except ValueError as exc:
+        raise ValueError(f"upstream URL is not structurally valid: {exc}") from exc
+    if parts.scheme.lower() != "http":
+        raise ValueError("upstream URL must use plain http (TLS terminates at the tunnel edge)")
+    if parts.username is not None or parts.password is not None or "@" in parts.netloc:
+        raise ValueError("upstream URL must not contain user information")
+    hostname = parts.hostname or ""
+    if hostname not in LOOPBACK_HOSTS:
+        raise ValueError("upstream URL host must be a loopback IP literal (127.0.0.1 or ::1)")
+    if port is not None and not 1 <= port <= 65535:
+        raise ValueError("upstream URL port must be between 1 and 65535")
+    if parts.path not in ("", "/"):
+        raise ValueError("upstream URL must not contain a path")
+    if parts.query or parts.fragment or "?" in url or "#" in url:
+        raise ValueError("upstream URL must not contain a query or fragment")
+    host_part = f"[{hostname}]" if ":" in hostname else hostname
+    netloc = f"{host_part}:{port}" if port is not None else host_part
+    return f"http://{netloc}"
+
+
 @dataclass
 class GatewayConfig:
     """Operational limits for the temporary gateway."""
@@ -88,7 +139,9 @@ class GatewayConfig:
     get_rate_per_minute: int = DEFAULT_GET_RATE_PER_MINUTE
     post_rate_per_minute: int = DEFAULT_POST_RATE_PER_MINUTE
     upstream_timeout_seconds: float = DEFAULT_UPSTREAM_TIMEOUT_SECONDS
-    require_forwarded_https: bool = False
+
+    def __post_init__(self) -> None:
+        self.upstream_base_url = validate_upstream_base_url(self.upstream_base_url)
 
 
 @dataclass
@@ -148,7 +201,7 @@ class ExposureGateway:
         client = scope.get("client") or ("unknown", 0)
         source_key = str(client[0])
 
-        if self.config.require_forwarded_https and not self._forwarded_https(scope):
+        if not self._forwarded_https(scope):
             await self._send_json(
                 send,
                 403,
@@ -196,16 +249,23 @@ class ExposureGateway:
     def _forwarded_https(scope) -> bool:
         """Check the scheme the tunnel edge reports for the client connection.
 
-        Fail-closed: the edge must state that the client used HTTPS. The
-        gateway is bound to loopback, so the edge header is the only evidence
-        of the client's scheme; a missing header is treated as cleartext.
+        Fail-closed and always enforced: every ``X-Forwarded-Proto`` value must
+        be exactly ``https``, and ``CF-Visitor`` must not report a cleartext
+        scheme. The gateway is bound to loopback, so the edge header is the
+        only evidence of the client's scheme; a missing header is treated as
+        cleartext.
         """
-        headers = {name.lower(): value for name, value in scope.get("headers", [])}
-        proto = headers.get(FORWARDED_PROTO_HEADER)
-        if proto is None or proto.strip().lower() != b"https":
+        protos = [
+            value
+            for name, value in scope.get("headers", [])
+            if name.lower() == FORWARDED_PROTO_HEADER
+        ]
+        if not protos or any(value.strip().lower() != b"https" for value in protos):
             return False
-        visitor = headers.get(CF_VISITOR_HEADER)
-        if visitor is not None and b'"scheme":"http"' in visitor.replace(b" ", b"").lower():
+        visitors = [
+            value for name, value in scope.get("headers", []) if name.lower() == CF_VISITOR_HEADER
+        ]
+        if any(b'"scheme":"http"' in value.replace(b" ", b"").lower() for value in visitors):
             return False
         return True
 
@@ -337,7 +397,6 @@ def create_gateway_app(
     get_rate_per_minute: int = DEFAULT_GET_RATE_PER_MINUTE,
     post_rate_per_minute: int = DEFAULT_POST_RATE_PER_MINUTE,
     upstream_timeout_seconds: float = DEFAULT_UPSTREAM_TIMEOUT_SECONDS,
-    require_forwarded_https: bool = False,
     transport: httpx.AsyncBaseTransport | None = None,
 ) -> ExposureGateway:
     """Build the gateway application used by the G4 tunnel and by tests."""
@@ -347,7 +406,6 @@ def create_gateway_app(
         get_rate_per_minute=get_rate_per_minute,
         post_rate_per_minute=post_rate_per_minute,
         upstream_timeout_seconds=upstream_timeout_seconds,
-        require_forwarded_https=require_forwarded_https,
     )
     return ExposureGateway(config, transport=transport)
 
@@ -377,9 +435,11 @@ def _parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--upstream",
         required=True,
-        help="Origin URL of the local FastAPI demo service (loopback only).",
+        help=(
+            "Origin URL of the local FastAPI demo service. Must be plain http to a "
+            "loopback IP literal (127.0.0.1 or ::1), with no userinfo, path, query or fragment."
+        ),
     )
-    parser.add_argument("--host", default="127.0.0.1", help="Bind address for the gateway.")
     parser.add_argument("--port", type=int, default=8080, help="Bind port for the gateway.")
     parser.add_argument("--max-body-bytes", type=int, default=DEFAULT_MAX_BODY_BYTES)
     parser.add_argument("--get-rate-per-minute", type=int, default=DEFAULT_GET_RATE_PER_MINUTE)
@@ -390,50 +450,37 @@ def _parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         default=0,
         help="Optional loopback port for a gateway health endpoint.",
     )
-    parser.add_argument(
-        "--require-forwarded-https",
-        action="store_true",
-        help=(
-            "Require the tunnel edge to report an HTTPS client connection. "
-            "Enable whenever the gateway is exposed through a tunnel."
-        ),
-    )
     return parser.parse_args(list(argv) if argv is not None else None)
 
 
 def main(argv: Iterable[str] | None = None) -> int:
     args = _parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    if not args.upstream.startswith("http://127.0.0.1") and not args.upstream.startswith(
-        "http://localhost"
-    ):
-        raise SystemExit(
-            "Refusing to start: the upstream origin must be a loopback address during G4."
+    try:
+        app = create_gateway_app(
+            args.upstream,
+            max_body_bytes=args.max_body_bytes,
+            get_rate_per_minute=args.get_rate_per_minute,
+            post_rate_per_minute=args.post_rate_per_minute,
         )
-    app = create_gateway_app(
-        args.upstream,
-        max_body_bytes=args.max_body_bytes,
-        get_rate_per_minute=args.get_rate_per_minute,
-        post_rate_per_minute=args.post_rate_per_minute,
-        require_forwarded_https=args.require_forwarded_https,
-    )
+    except ValueError as exc:
+        raise SystemExit(f"Refusing to start: {exc}") from exc
     LOGGER.info(
         "gateway_start upstream=%s bind=%s:%s max_body_bytes=%s get_rate=%s post_rate=%s "
-        "require_forwarded_https=%s",
-        args.upstream,
-        args.host,
+        "https_edge=enforced",
+        app.config.upstream_base_url,
+        GATEWAY_BIND_HOST,
         args.port,
         args.max_body_bytes,
         args.get_rate_per_minute,
         args.post_rate_per_minute,
-        args.require_forwarded_https,
     )
     if args.health_port:
         asyncio.run(_run_with_health(app, args))
     else:
         import uvicorn
 
-        uvicorn.run(app, host=args.host, port=args.port, log_level="warning")
+        uvicorn.run(app, host=GATEWAY_BIND_HOST, port=args.port, log_level="warning")
     return 0
 
 
@@ -442,7 +489,7 @@ async def _run_with_health(app, args) -> None:
 
     health_task = asyncio.create_task(_serve_health(args.health_port))
     server = uvicorn.Server(
-        uvicorn.Config(app, host=args.host, port=args.port, log_level="warning")
+        uvicorn.Config(app, host=GATEWAY_BIND_HOST, port=args.port, log_level="warning")
     )
     with contextlib.suppress(asyncio.CancelledError):
         await server.serve()

@@ -13,13 +13,16 @@ import logging
 import httpx
 import pytest
 
+from cyberquest import g4_gateway
 from cyberquest.g4_gateway import (
     DEFAULT_MAX_BODY_BYTES,
     create_gateway_app,
+    validate_upstream_base_url,
 )
 
 MISSION_PATH = "/v1/demo/missions/phishing-detective"
 ASSESSMENT_PATH = "/v1/demo/missions/phishing-detective/assessment"
+EDGE_HEADERS = {"X-Forwarded-Proto": "https"}
 
 
 class RecordingApp:
@@ -55,11 +58,15 @@ class RecordingApp:
         await send({"type": "http.response.body", "body": payload})
 
 
-def call(gateway, method: str, path: str, **kwargs) -> httpx.Response:
+def call(gateway, method: str, path: str, *, edge: bool = True, headers=None, **kwargs) -> httpx.Response:
+    merged_headers = dict(EDGE_HEADERS) if edge else {}
+    if headers:
+        merged_headers.update(headers)
+
     async def run() -> httpx.Response:
         transport = httpx.ASGITransport(app=gateway)
         async with httpx.AsyncClient(transport=transport, base_url="http://gateway") as client:
-            return await client.request(method, path, **kwargs)
+            return await client.request(method, path, headers=merged_headers, **kwargs)
 
     return asyncio.run(run())
 
@@ -275,20 +282,25 @@ def test_logs_contain_no_payload_content_or_client_address(
     assert "path=/v1/demo/missions/phishing-detective/assessment" in record
 
 
-def test_forwarded_https_is_required_when_enabled() -> None:
+def test_https_edge_assertion_is_mandatory() -> None:
     upstream = RecordingApp()
-    gateway = build_gateway(upstream, require_forwarded_https=True)
+    gateway = build_gateway(upstream)
 
-    rejected = call(gateway, "GET", MISSION_PATH)
+    rejected = call(gateway, "GET", MISSION_PATH, edge=False)
 
     assert rejected.status_code == 403
     assert rejected.json() == {"detail": {"code": "https_required"}}
     assert upstream.requests == []
 
 
+def test_https_edge_assertion_has_no_opt_out() -> None:
+    with pytest.raises(TypeError):
+        create_gateway_app("http://127.0.0.1:8000", require_forwarded_https=False)
+
+
 def test_forwarded_https_is_accepted_when_the_edge_reports_https() -> None:
     upstream = RecordingApp(body={"mission_id": "phishing-detective-suspicious-invoice"})
-    gateway = build_gateway(upstream, require_forwarded_https=True)
+    gateway = build_gateway(upstream)
 
     response = call(
         gateway, "GET", MISSION_PATH, headers={"X-Forwarded-Proto": "https"}
@@ -300,7 +312,7 @@ def test_forwarded_https_is_accepted_when_the_edge_reports_https() -> None:
 
 def test_forwarded_http_is_rejected_when_the_edge_reports_cleartext() -> None:
     upstream = RecordingApp()
-    gateway = build_gateway(upstream, require_forwarded_https=True)
+    gateway = build_gateway(upstream)
 
     response = call(gateway, "GET", MISSION_PATH, headers={"X-Forwarded-Proto": "http"})
 
@@ -311,7 +323,7 @@ def test_forwarded_http_is_rejected_when_the_edge_reports_cleartext() -> None:
 
 def test_cf_visitor_scheme_is_checked_as_well() -> None:
     upstream = RecordingApp()
-    gateway = build_gateway(upstream, require_forwarded_https=True)
+    gateway = build_gateway(upstream)
 
     response = call(
         gateway,
@@ -346,3 +358,62 @@ def test_forwarded_protocol_headers_are_not_forwarded_upstream() -> None:
     assert "x-forwarded-proto" not in forwarded.headers
     assert "x-forwarded-host" not in forwarded.headers
     assert "cf-visitor" not in forwarded.headers
+
+
+def test_upstream_url_validation_accepts_loopback_ip_literals() -> None:
+    assert validate_upstream_base_url("http://127.0.0.1:8000") == "http://127.0.0.1:8000"
+    assert validate_upstream_base_url("HTTP://127.0.0.1:8000") == "http://127.0.0.1:8000"
+    assert validate_upstream_base_url("http://[::1]:8000/") == "http://[::1]:8000"
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://127.0.0.1:8000",
+        "ftp://127.0.0.1:8000",
+        "http://localhost:8000",
+        "http://example.com:8000",
+        "http://127.0.0.1.evil.example:8000",
+        "http://127.0.0.1:8000@evil.example",
+        "http://user:pass@127.0.0.1:8000",
+        "http://2130706433:8000",
+        "http://127.0.0.1:0",
+        "http://127.0.0.1:99999",
+        "http://127.0.0.1:8000/v1",
+        "http://127.0.0.1:8000?debug=1",
+        "http://127.0.0.1:8000#fragment",
+        "http:// 127.0.0.1:8000",
+    ],
+)
+def test_upstream_url_validation_rejects_non_loopback_or_non_structural_values(url: str) -> None:
+    with pytest.raises(ValueError):
+        validate_upstream_base_url(url)
+    with pytest.raises(ValueError):
+        create_gateway_app(url)
+
+
+def test_main_refuses_an_invalid_upstream() -> None:
+    with pytest.raises(SystemExit) as excinfo:
+        g4_gateway.main(["--upstream", "http://localhost:8000"])
+
+    assert "loopback IP literal" in str(excinfo.value)
+
+
+def test_gateway_bind_host_is_not_configurable() -> None:
+    with pytest.raises(SystemExit):
+        g4_gateway._parse_args(["--upstream", "http://127.0.0.1:8000", "--host", "0.0.0.0"])
+
+
+def test_gateway_always_binds_loopback(monkeypatch: pytest.MonkeyPatch) -> None:
+    import uvicorn
+
+    captured: dict[str, object] = {}
+
+    def fake_run(app, *, host: str, port: int, log_level: str) -> None:
+        captured.update(host=host, port=port, log_level=log_level)
+
+    monkeypatch.setattr(uvicorn, "run", fake_run)
+
+    assert g4_gateway.main(["--upstream", "http://127.0.0.1:8000", "--port", "8099"]) == 0
+    assert captured["host"] == "127.0.0.1"
+    assert captured["port"] == 8099
